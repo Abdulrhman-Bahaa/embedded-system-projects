@@ -18,11 +18,11 @@ key_value_pair_t arr[] = {{"access log", 0}, {"limit exceeded", 0}};
 const rgb_led_config_t rgb0 = {
     .red_location = {
         .port = PORTD_INDEX,
-        .pin = PIN3_INDEX
+        .pin = PIN2_INDEX
     },
     .blue_location = {
         .port = PORTD_INDEX,
-        .pin = PIN2_INDEX
+        .pin = PIN3_INDEX
     },
     .green_location = {
         .port = PORTD_INDEX,
@@ -33,32 +33,23 @@ const rgb_led_config_t rgb0 = {
 const pin_config_t buzzer0 = {
     .location = {
         .port = PORTB_INDEX,
-        .pin = PIN4_INDEX
+        .pin = PIN5_INDEX
     },
     .direction = OUTPUT,
     .logic = LOW
 };
 
-const pin_config_t rb5 = {
-    .location = {
-        .port = PORTB_INDEX,
-        .pin = PIN5_INDEX
-    },
-    .direction = INPUT,
-    .logic = LOW
-};
-
 const keypad_config_t keypad0 = {
     .columns = {
+        {PORTB_INDEX, PIN0_INDEX},
         {PORTD_INDEX, PIN7_INDEX},
-        {PORTD_INDEX, PIN6_INDEX},
-        {PORTD_INDEX, PIN5_INDEX}
+        {PORTD_INDEX, PIN6_INDEX}
     },
     .rows = {
+        {PORTB_INDEX, PIN4_INDEX},
+        {PORTB_INDEX, PIN3_INDEX},
         {PORTB_INDEX, PIN2_INDEX},
-        {PORTB_INDEX, PIN1_INDEX},
-        {PORTB_INDEX, PIN0_INDEX},
-        {PORTB_INDEX, PIN3_INDEX}
+        {PORTB_INDEX, PIN1_INDEX}
     }
 };
 
@@ -80,8 +71,7 @@ Std_ReturnType application_initialize(void) {
     ret |= ecual_rgb_led_init(&rgb0);
     ret |= ecual_oled_display_init(&oled0);
     ret |= ecual_keypad_init(&keypad0);
-    ret |= mcal_gpio_pin_init(&buzzer0);
-    ret |= mcal_gpio_pin_init(&rb5);
+    ret |= mcal_gpio_pin_init(&buzzer0);    
     ret |= mcal_usart_init(&usart0);
     return ret;
 }
@@ -94,21 +84,13 @@ int main(void) {
     uint8_t recieved_char = 0;
     uint8_t start_column = 36;
     uint8_t clear = 1;
-    uint8_t enter_password = 1;
 
-    ret |= ecual_oled_display_clear(&oled0);
+    ret |= ecual_oled_display_bit_mapping(&oled0, epd_bitmap_lock, 128, 64, 0, 0);
 
     // Do foreever
     while(1) {
          // If there are allowed attempts
         if (access_attempts > 0) { 
-            if (1 == enter_password) {
-                ret |= ecual_oled_display_bit_mapping(&oled0, epd_bitmap_lock, 128, 64, 0, 0);
-				enter_password = 0;
-            }
-            else {
-                /* Nothing */
-            }
             ret |= ecual_keypad_char_read(&keypad0, &recieved_char);
             // If the required number (5) of the password digits received
             if (0 == password_length) {
@@ -161,7 +143,6 @@ int main(void) {
                     start_column += 11;
                     password_length--;
                     recieved_char = 0;
-                    enter_password = 0;
                 }
                 else {
                     /* Nothing */
