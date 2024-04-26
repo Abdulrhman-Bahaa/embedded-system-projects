@@ -8,11 +8,8 @@
 #include <ecual.h>
 
 /* Variables Definitions ----------------------------------------------------*/ 
-const uint8_t password[] = "00000";
+uint8_t password[] = "00000", password_length = 5, received_password[6] = {'\0'}, token[] = "";
 sint8_t access_attempts = 3;
-uint8_t password_length = 5;
-uint8_t received_password[6] = {'\0'};
-const char token[] = "";
 key_value_pair_t arr[] = {{"access log", 0}, {"limit exceeded", 0}};
 
 const rgb_led_config_t rgb0 = {
