@@ -83,7 +83,6 @@ int main(void) {
     // Do foreever
     while(1) {
         // If there are allowed attempts
-
         if (access_attempts > 0) { 
             ret |= ecual_keypad_char_read(&keypad0, &recieved_char);
             // If the required number (5) of the password digits received
@@ -143,13 +142,14 @@ int main(void) {
                 }
             }
         }
-        else if (0 == access_attempts){
+        else if (0 == access_attempts) {
             ret |= ecual_oled_display_string_write(&oled0, "No more attemptsallowed", 8, 16, 0, 0);
             _delay_ms(4000);
             ret |= ecual_oled_display_bit_mapping(&oled0, epd_bitmap_lock, 128, 64, 0, 0);
             access_attempts--;
             arr[1].value = 1;
-            ret |= ecual_wifi_module_ubidots_data_send(token, "esp8266", arr, 1, 2);        }
+            ret |= ecual_wifi_module_ubidots_data_send(token, "esp8266", arr, 1, 2); 
+	}
         else {
 		/* Nothing */
         }
