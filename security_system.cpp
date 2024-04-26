@@ -80,9 +80,7 @@ Std_ReturnType application_initialize(void) {
 int main(void) {
     Std_ReturnType ret = E_OK;
     ret |= application_initialize();
-    uint8_t recieved_char = 0;
-    uint8_t start_column = 36;
-    uint8_t clear = 1;
+    uint8_t recieved_char = 0, start_column = 36, clear = 1;
 
     ret |= ecual_oled_display_bit_mapping(&oled0, epd_bitmap_lock, 128, 64, 0, 0);    
     // Do foreever
@@ -102,7 +100,7 @@ int main(void) {
                     ret |= mcal_gpio_pin_logic_write(&(buzzer0.location), HIGH);
                     _delay_ms(100);
                     ret |= mcal_gpio_pin_logic_write(&(buzzer0.location), LOW);
-					_delay_ms(500);
+		    _delay_ms(500);
                     ret |= ecual_rgb_led_turn_off(&rgb0);
                     arr[0].value = 0;
                 }
@@ -156,6 +154,7 @@ int main(void) {
             arr[1].value = 1;
             ret |= ecual_wifi_module_ubidots_data_send(token, "esp8266", arr, 1, 2);        }
         else {
+		/* Nothing */
         }
     }
     return 0;
