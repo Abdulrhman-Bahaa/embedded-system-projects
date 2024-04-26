@@ -18,11 +18,11 @@ key_value_pair_t arr[] = {{"access log", 0}, {"limit exceeded", 0}};
 const rgb_led_config_t rgb0 = {
     .red_location = {
         .port = PORTD_INDEX,
-        .pin = PIN2_INDEX
+        .pin = PIN3_INDEX
     },
     .blue_location = {
         .port = PORTD_INDEX,
-        .pin = PIN3_INDEX
+        .pin = PIN5_INDEX
     },
     .green_location = {
         .port = PORTD_INDEX,
@@ -41,14 +41,14 @@ const pin_config_t buzzer0 = {
 
 const keypad_config_t keypad0 = {
     .columns = {
-        {PORTB_INDEX, PIN0_INDEX},
-        {PORTD_INDEX, PIN7_INDEX},
-        {PORTD_INDEX, PIN6_INDEX}
+        {PORTB_INDEX, PIN2_INDEX},
+        {PORTB_INDEX, PIN3_INDEX},
+        {PORTB_INDEX, PIN4_INDEX}
     },
     .rows = {
-        {PORTB_INDEX, PIN4_INDEX},
-        {PORTB_INDEX, PIN3_INDEX},
-        {PORTB_INDEX, PIN2_INDEX},
+        {PORTD_INDEX, PIN6_INDEX},
+        {PORTD_INDEX, PIN7_INDEX},
+        {PORTB_INDEX, PIN0_INDEX},
         {PORTB_INDEX, PIN1_INDEX}
     }
 };
@@ -80,16 +80,15 @@ Std_ReturnType application_initialize(void) {
 int main(void) {
     Std_ReturnType ret = E_OK;
     ret |= application_initialize();
-
     uint8_t recieved_char = 0;
     uint8_t start_column = 36;
     uint8_t clear = 1;
 
-    ret |= ecual_oled_display_bit_mapping(&oled0, epd_bitmap_lock, 128, 64, 0, 0);
-
+    ret |= ecual_oled_display_bit_mapping(&oled0, epd_bitmap_lock, 128, 64, 0, 0);    
     // Do foreever
     while(1) {
-         // If there are allowed attempts
+        // If there are allowed attempts
+
         if (access_attempts > 0) { 
             ret |= ecual_keypad_char_read(&keypad0, &recieved_char);
             // If the required number (5) of the password digits received
