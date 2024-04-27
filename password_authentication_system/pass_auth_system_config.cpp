@@ -60,8 +60,10 @@ Std_ReturnType incorrect_pass_callback_fun(void) {
 // This function must have its own while loop with its breaker condition 
 Std_ReturnType limit_exceeded_callback_fun(void) {
     Std_ReturnType ret = E_OK;
+    uint8_t keep_in_loop = 1;
     // Action
-    while (1) {
+    while (keep_in_loop) {
+       // Condition to break the loop
     }
     return ret;
 }
