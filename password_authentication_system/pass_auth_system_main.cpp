@@ -1,6 +1,6 @@
 /**
  ******************************************************************************
- * @mainpage   Security System
+ * @mainpage   Password authentication system
  * @brief      This source file contains the main function of the application
  * @date       2024-3-27
  ******************************************************************************
@@ -8,8 +8,9 @@
 #include "pass_auth_system_config.h"
 
 /* Macro Declarations -------------------------------------------------------*/
+#define CHARACTER_WIDTH      8
 #define PASSWORD_LENGTH      strlen(PASSWORD)
-#define DISPLAY_START_COLUMN (((128 - (11 * PASSWORD_LENGTH))) / 2)
+#define DISPLAY_START_COLUMN (((128 - (CHARACTER_WIDTH * PASSWORD_LENGTH))) / 2)
 
 /* Variables Definitions ----------------------------------------------------*/ 
 
@@ -59,9 +60,9 @@ int main(void) {
                     else {
                         /* Nothing */
                     }
-                    ret |= ecual_oled_display_char_write(&oled0, received_char, 11, 16,  2, start_column);
+                    ret |= ecual_oled_display_char_write(&oled0, received_char, CHARACTER_WIDTH, 16,  2, start_column);
                     received_password[PASSWORD_LENGTH - remaining_chars] = received_char;
-                    start_column += 11;
+                    start_column += CHARACTER_WIDTH;
                     remaining_chars--;
                     received_char = 0;
                 }
