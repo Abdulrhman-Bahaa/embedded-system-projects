@@ -31,12 +31,12 @@ int main(void) {
                 // If received password is correct :
                 if (!strcmp(received_password, password)) {
                     remaining_access_attempts = allowed_access_attempts;
-                    ret |= correct_pass_callback_fun();
+                    ret |= correct_pass_callback_fun(received_password);
                 }
                 // If received password is incorrect :
                 else {
                     remaining_access_attempts--;
-                    ret |= incorrect_pass_callback_fun();
+                    ret |= incorrect_pass_callback_fun(received_password);
                 }
                 remaining_digits = strlen(password);
             }
