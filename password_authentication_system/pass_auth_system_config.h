@@ -10,29 +10,25 @@
 #define	PASS_AUTH_SYSTEM_CONFIG_H
 
 /* Includes -----------------------------------------------------------------*/
-#include "keypad/ecual_keypad.h"
-#include <usart/mcal_usart.h>
-#include "oled_display/ecual_oled_display.h"
+#include "std/mcal_std_types.h"
+#include <string.h>
+#include <stdlib.h>
 
 /* Macro Declarations -------------------------------------------------------*/
-#define NUMBER_OF_ALLOWED_ATTEMPTS  2
-#define PASSWORD                    "000000"    // 10 digits max
-#define KEYPAD_USER_INPUT           1
-// #define SERIAL_TERMINAL_USER_INPUT  1
 
 /* Macro Functions Declarations ---------------------------------------------*/
 
 /* Variables Declarations ---------------------------------------------------*/
-extern const keypad_config_t keypad0;
-extern const usart_config_t usart0;
-extern const oled_display_config_t oled0;
 
 /* Functions Declarations ---------------------------------------------------*/
 Std_ReturnType application_initialize(void);
+void system_config(uint8_t** password, uint8_t* allowed_access_attempts);
+Std_ReturnType user_input_fun(uint8_t* received_char);
+Std_ReturnType receiving_chars_callback_fun(const uint8_t* received_char);
+Std_ReturnType pass_received_callback_fun(const uint8_t* received_password);
 Std_ReturnType correct_pass_callback_fun(void);
 Std_ReturnType incorrect_pass_callback_fun(void);
 // This function must have its own while loop with its breaker condition 
 Std_ReturnType limit_exceeded_callback_fun(void);
 
 #endif /* PASS_AUTH_SYSTEM_H */
-
