@@ -6,48 +6,44 @@
  * @date       2024-4-27
  ******************************************************************************
 */
-#include "pass_auth_system_config.h"
+/* Includes -----------------------------------------------------------------*/
+#include "std/mcal_std_types.h"
+
+/* Macro Declarations -------------------------------------------------------*/
 
 /* Global Variables ---------------------------------------------------------*/
-const keypad_config_t keypad0 = {
-    .columns = {
-        {PORTB_INDEX, PIN2_INDEX},
-        {PORTB_INDEX, PIN3_INDEX},
-        {PORTB_INDEX, PIN4_INDEX}
-    },
-    .rows = {
-        {PORTD_INDEX, PIN6_INDEX},
-        {PORTD_INDEX, PIN7_INDEX},
-        {PORTB_INDEX, PIN0_INDEX},
-        {PORTB_INDEX, PIN1_INDEX}
-    }
-};
-
-const usart_config_t usart0 = {
-    .mode = USART_ASYNCHRONOUS_MODE,
-    .ubrr_value = 16,
-    .device_state = USART_TRANSMITTER_RECEIVER,
-    .usart_interrupt = 0,
-    .usart_receive_callback_interrupt_function = NULL
-};
-
-const oled_display_config_t oled0 = {
-    .oled_display_address = 0x78
-};
 
 /* Initialization Function --------------------------------------------------*/ 
 Std_ReturnType application_initialize(void) {
-    Std_ReturnType ret = E_OK;
-    ret |= ecual_keypad_init(&keypad0);
-    ret |= mcal_usart_init(&usart0);
-    ret |= ecual_oled_display_init(&oled0);
+    Std_ReturnType ret = E_OK;  
     return ret;
 }
 
 /* Functions Implementations ------------------------------------------------*/
-Std_ReturnType correct_pass_callback_fun(void) {
+void system_config(uint8_t** password, uint8_t* allowed_access_attempts) {
+    *password = "Write pass here";
+    *allowed_access_attempts = 1;
+}
+
+// This function determine how the input will be taken, put the value in "received_char" pointer;
+Std_ReturnType user_input_fun(uint8_t* received_char) {
+    Std_ReturnType ret = E_OK;
+    return ret;   
+}
+
+Std_ReturnType receiving_chars_callback_fun(const uint8_t* received_char) {
     Std_ReturnType ret = E_OK;
     // Action
+    return ret;
+}
+
+Std_ReturnType pass_received_callback_fun(const uint8_t* received_password) {
+    Std_ReturnType ret = E_OK;
+    return ret;
+}   
+
+Std_ReturnType correct_pass_callback_fun(void) {
+    Std_ReturnType ret = E_OK;
     return ret;
 }
 
@@ -61,10 +57,8 @@ Std_ReturnType incorrect_pass_callback_fun(void) {
 Std_ReturnType limit_exceeded_callback_fun(void) {
     Std_ReturnType ret = E_OK;
     uint8_t keep_in_loop = 1;
-    // Action
     while (keep_in_loop) {
-       // Condition to break the loop
+      // Condition to break the loop
     }
     return ret;
 }
-
