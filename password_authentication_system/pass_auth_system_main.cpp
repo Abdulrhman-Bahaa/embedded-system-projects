@@ -28,7 +28,6 @@ int main(void) {
         if (remaining_access_attempts > 0) { 
             // If the required password digits received
             if (0 == remaining_digits) {
-                ret |= pass_received_callback_fun(received_password);
                 // If received password is correct :
                 if (!strcmp(received_password, password)) {
                     remaining_access_attempts = allowed_access_attempts;
