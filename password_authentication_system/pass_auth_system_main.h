@@ -23,8 +23,7 @@
 /* Functions Declarations ---------------------------------------------------*/
 Std_ReturnType application_initialize(void);
 void system_config(uint8_t** password, uint8_t* allowed_access_attempts);
-Std_ReturnType user_input_fun(uint8_t* received_char);
-Std_ReturnType receiving_chars_callback_fun(const uint8_t* received_char);
+Std_ReturnType take_digit_from_user(uint8_t* received_digit);
 Std_ReturnType pass_received_callback_fun(const uint8_t* received_password);
 Std_ReturnType correct_pass_callback_fun(void);
 Std_ReturnType incorrect_pass_callback_fun(void);
