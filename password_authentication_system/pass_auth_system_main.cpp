@@ -27,13 +27,6 @@ int main(void) {
     while(1) {
         // If there are allowed attempts
         if (access_attempts > 0) { 
-#if defined(KEYPAD_USER_INPUT)
-            ret |= ecual_keypad_char_read(&keypad0, &received_char);
-#elif defined(SERIAL_TERMINAL_USER_INPUT)
-            ret |= mcal_usart_receive_data(&received_char);
-#else
-/* Nothing */
-#endif
             // If the required password digits received
             if (0 == remaining_chars) {
                 ret |= ecual_oled_display_clear(&oled0);
@@ -52,6 +45,13 @@ int main(void) {
                 start_column = DISPLAY_START_COLUMN;
             }
             else {
+#if defined(KEYPAD_USER_INPUT)
+            	ret |= ecual_keypad_char_read(&keypad0, &received_char);
+#elif defined(SERIAL_TERMINAL_USER_INPUT)
+            	ret |= mcal_usart_receive_data(&received_char);
+#else
+/* Nothing */
+#endif
                 if (received_char) {
                     if (1 == clear) {
                         ret |= ecual_oled_display_clear(&oled0);
