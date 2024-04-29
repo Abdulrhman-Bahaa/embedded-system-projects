@@ -31,12 +31,12 @@ Std_ReturnType take_digit_from_user(uint8_t* received_digit) {
     return ret;   
 }
 
-Std_ReturnType correct_pass_callback_fun(void) {
+Std_ReturnType correct_pass_callback_fun(const uint8_t* received_password) {
     Std_ReturnType ret = E_OK;
     return ret;
 }
 
-Std_ReturnType incorrect_pass_callback_fun(void) {
+Std_ReturnType incorrect_pass_callback_fun(const uint8_t* received_password) {
     Std_ReturnType ret = E_OK;
     // Action
     return ret;
