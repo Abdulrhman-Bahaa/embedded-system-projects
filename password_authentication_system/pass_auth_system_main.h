@@ -24,8 +24,8 @@
 Std_ReturnType application_initialize(void);
 void system_config(uint8_t** password, uint8_t* allowed_access_attempts);
 Std_ReturnType take_digit_from_user(uint8_t* received_digit, const uint8_t digit_num);
-Std_ReturnType correct_pass_callback_fun(const uint8_t* received_password);
-Std_ReturnType incorrect_pass_callback_fun(const uint8_t* received_password);
+Std_ReturnType correct_pass_callback_fun(void);
+Std_ReturnType incorrect_pass_callback_fun(void);
 // This function must have its own while loop with its breaker condition 
 Std_ReturnType limit_exceeded_callback_fun(void);
 
