@@ -11,34 +11,34 @@
 
 /* Macro Declarations -------------------------------------------------------*/
 
-/* Global Variables ---------------------------------------------------------*/
+/* Global Variables --------------------------  -------------------------------*/
 
 /* Initialization Function --------------------------------------------------*/ 
 Std_ReturnType application_initialize(void) {
-    Std_ReturnType ret = E_OK;  
+    Std_ReturnType ret = E_OK;
     return ret;
 }
 
 /* Functions Implementations ------------------------------------------------*/
 void system_config(uint8_t** password, uint8_t* allowed_access_attempts) {
-    *password = "Write pass here";
-    *allowed_access_attempts = 1;
+    *password = "123";
+    *allowed_access_attempts = 10;
 }
 
-// This function determine how the input will be taken, put the value in "received_char" pointer;
+// This function determine how the input will be taken, put the value in "received_digit" pointer;
+// The '\r' will be the indicator that the the pass digits are complete, put it in "received_digit" when required.
 Std_ReturnType take_digit_from_user(uint8_t* received_digit, const uint8_t digit_num) {
     Std_ReturnType ret = E_OK;
     return ret;   
 }
 
-Std_ReturnType correct_pass_callback_fun(const uint8_t* received_password) {
+Std_ReturnType correct_pass_callback_fun(void) {
     Std_ReturnType ret = E_OK;
     return ret;
 }
 
-Std_ReturnType incorrect_pass_callback_fun(const uint8_t* received_password) {
+Std_ReturnType incorrect_pass_callback_fun(void) {
     Std_ReturnType ret = E_OK;
-    // Action
     return ret;
 }
 
@@ -47,7 +47,8 @@ Std_ReturnType limit_exceeded_callback_fun(void) {
     Std_ReturnType ret = E_OK;
     uint8_t keep_in_loop = 1;
     while (keep_in_loop) {
-      // Condition to break the loop
+     // Condition to break the loop
     }
     return ret;
 }
+
