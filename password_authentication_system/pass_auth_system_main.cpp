@@ -16,7 +16,7 @@ int main(void) {
     Std_ReturnType ret = E_OK;
     ret |= application_initialize();
     uint8_t *password = NULL, *received_password;
-    uint8_t allowed_access_attempts = 0, received_digit = 0;
+    uint8_t allowed_access_attempts = 0, received_digit = 0, pass_overflow = 0;
     system_config(&password, &allowed_access_attempts);
 
     uint8_t remaining_access_attempts = allowed_access_attempts, digit_num = 0;
@@ -26,36 +26,42 @@ int main(void) {
     while(1) {
         // If there are allowed attempts
         if (remaining_access_attempts > 0) { 
+            ret |= take_digit_from_user(&received_digit, digit_num);
             // If the required password digits received
-            if (strlen(password) == digit_num) {
+            // Indicator : Enter (CR)
+            if (13 == received_digit) {
                 // If received password is correct :
-                if (!strcmp(received_password, password)) {
+                if ((!strcmp(received_password, password)) && (0 == pass_overflow)) {
                     remaining_access_attempts = allowed_access_attempts;
-                    ret |= correct_pass_callback_fun(received_password);
+                    ret |= correct_pass_callback_fun();
                 }
                 // If received password is incorrect :
                 else {
                     remaining_access_attempts--;
-                    ret |= incorrect_pass_callback_fun(received_password);
+                    ret |= incorrect_pass_callback_fun();
                 }
+                pass_overflow = 0;
                 digit_num = 0;
+                received_digit = 0;
             }
             else {
-                ret |= take_digit_from_user(&received_digit, digit_num);
                 if (received_digit) {
-                    received_password[digit_num] = received_digit;
                     // Backspace
                     if (8 == received_digit) {
                         if (0 != digit_num) {
                             digit_num--;
+                            if (digit_num < strlen(password)) {
+                                pass_overflow = 0;
+                            }
                         }
-                        else {
-                            /* Noting */
-                        }
+                    }
+                    else if (digit_num < strlen(password)) {
+                        received_password[digit_num] = received_digit;
                     }
                     else {
-                        digit_num++;
+                        pass_overflow = 1;
                     }
+                    digit_num++;
                     received_digit = 0;
                 }
                 else {
@@ -72,3 +78,4 @@ int main(void) {
     }
     return 0;
 }
+    
