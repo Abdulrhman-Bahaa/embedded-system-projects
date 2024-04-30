@@ -29,6 +29,8 @@ void system_config(uint8_t** password, uint8_t* allowed_access_attempts) {
 
 // This function determine how the input will be taken, put the value in "received_digit" pointer;
 // The '\r' will be the indicator that the the pass digits are complete, put it in "received_digit" when required.
+// when backspace is received (delete digit), the new digit will be put in the right digit automaticly, leaving "digit_num" with
+// the correct value.
 Std_ReturnType take_digit_from_user(uint8_t* received_digit, const uint8_t digit_num) {
     Std_ReturnType ret = E_OK;
     return ret;   
