@@ -57,11 +57,11 @@ int main(void) {
                     }
                     else if (digit_num < strlen(password)) {
                         received_password[digit_num] = received_digit;
+			digit_num++;
                     }
                     else {
                         pass_overflow = 1;
                     }
-                    digit_num++;
                     received_digit = 0;
                 }
                 else {
