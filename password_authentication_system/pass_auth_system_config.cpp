@@ -11,7 +11,8 @@
 
 /* Macro Declarations -------------------------------------------------------*/
 
-/* Global Variables --------------------------  -----------------------------*/
+/* Global Variables ---------------------------------------------------------*/
+uint8_t pass_length = 0;
 
 /* Initialization Function --------------------------------------------------*/ 
 // This function will be called only once, suitable for initialization, oled, keypad, etc..
@@ -25,6 +26,8 @@ Std_ReturnType application_initialize(void) {
 void system_config(uint8_t** password, uint8_t* allowed_access_attempts) {
     *password = "00000";
     *allowed_access_attempts = 3;
+
+    pass_length = strlen(*password);
 }
 
 // This function determine how the input will be taken, put the value in "received_digit" pointer.
