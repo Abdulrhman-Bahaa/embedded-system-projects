@@ -1,6 +1,6 @@
  /**
  ******************************************************************************
- * @file       pass_auth_system_config.h
+ * @file       pass_auth_system_main.h
  * @author     Abdulrhman Bahaa
  * @brief      This header file contains the declarations for led interfaces
  * @date       2024-4-27
