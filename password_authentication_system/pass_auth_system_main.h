@@ -6,8 +6,8 @@
  * @date       2024-4-27
  ******************************************************************************
 */
-#ifndef PASS_AUTH_SYSTEM_CONFIG_H
-#define	PASS_AUTH_SYSTEM_CONFIG_H
+#ifndef PASS_AUTH_SYSTEM_MAIN_H
+#define	PASS_AUTH_SYSTEM_MAIN_H
 
 /* Includes -----------------------------------------------------------------*/
 #include "std/mcal_std_types.h"
@@ -29,4 +29,4 @@ Std_ReturnType incorrect_pass_callback_fun(void);
 // This function must have its own while loop with its breaker condition 
 Std_ReturnType limit_exceeded_callback_fun(void);
 
-#endif /* PASS_AUTH_SYSTEM_H */
+#endif /* PASS_AUTH_SYSTEM_MAIN_H */
