@@ -8,12 +8,12 @@
 #include "pass_auth_system_main.h"
 
 /* Variables Definitions ----------------------------------------------------*/ 
+uint8_t *password = NULL, *received_password = NULL;
 
 /* Main Function ------------------------------------------------------------*/
 int main(void) {
     Std_ReturnType ret = E_OK;
     ret |= application_initialize();
-    uint8_t *password = NULL, *received_password;
     uint8_t allowed_access_attempts = 0, received_digit = 0, pass_overflow = 0;
     system_config(&password, &allowed_access_attempts);
 
@@ -55,7 +55,7 @@ int main(void) {
                     }
                     else if (digit_num < strlen(password)) {
                         received_password[digit_num] = received_digit;
-			digit_num++;
+                        digit_num++;
                     }
                     else {
                         pass_overflow = 1;
@@ -72,8 +72,15 @@ int main(void) {
             // This function must have its own while loop with its breaker condition 
             ret |= limit_exceeded_callback_fun();
             remaining_access_attempts = allowed_access_attempts;
-	}
+	    }
     }
     return 0;
 }
-    
+
+/* Functions Implementations ------------------------------------------------*/
+void change_pass(const uint8_t* new_pass) {
+    free(received_password);
+    password = new_pass;
+    received_password = (uint8_t *)malloc(strlen(password) + 1);
+    received_password[strlen(password)] = '\0';
+}
