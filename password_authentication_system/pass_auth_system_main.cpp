@@ -8,18 +8,16 @@
 #include "pass_auth_system_main.h"
 
 /* Variables Definitions ----------------------------------------------------*/ 
-uint8_t *password = NULL, *received_password = NULL;
+static uint8_t* password = NULL;
+static uint8_t received_password[MAX_PASS_DIGITS] = {'\0'}, allowed_access_attempts = 0;
 
 /* Main Function ------------------------------------------------------------*/
 int main(void) {
     Std_ReturnType ret = E_OK;
     ret |= application_initialize();
-    uint8_t allowed_access_attempts = 0, received_digit = 0, pass_overflow = 0;
-    system_config(&password, &allowed_access_attempts);
-
-    uint8_t remaining_access_attempts = allowed_access_attempts, digit_num = 0;
-    received_password = (uint8_t *)malloc(strlen(password) + 1);
-    received_password[strlen(password)] = '\0';
+    ret |= system_config();
+    uint8_t remaining_access_attempts = allowed_access_attempts, digit_num = 0, 
+    received_digit = 0, pass_overflow = 0;
     // Do forever
     while(1) {
         // If there are allowed attempts
@@ -42,29 +40,27 @@ int main(void) {
                 digit_num = 0;
                 received_digit = 0;
             }
-            else {
-                if (received_digit) {
-                    // Backspace
-                    if (8 == received_digit) {
-                        if (0 != digit_num) {
-                            digit_num--;
-                            if (digit_num < strlen(password)) {
-                                pass_overflow = 0;
-                            }
+            else if (received_digit){         
+                // Backspace
+                if (8 == received_digit) {
+                    if (0 != digit_num) {
+                        digit_num--;
+                        if (digit_num < strlen(password)) {
+                            pass_overflow = 0;
                         }
                     }
-                    else if (digit_num < strlen(password)) {
-                        received_password[digit_num] = received_digit;
-                        digit_num++;
-                    }
-                    else {
-                        pass_overflow = 1;
-                    }
-                    received_digit = 0;
+                }
+                else if (digit_num < strlen(password)) {
+                    received_password[digit_num] = received_digit;
+                    digit_num++;
                 }
                 else {
-                    /* Nothing */
+                    pass_overflow = 1;
                 }
+                received_digit = 0;
+            }
+            else {
+                /* Nothing */
             }
         }
         // If there are no allowed attempts
@@ -78,9 +74,70 @@ int main(void) {
 }
 
 /* Functions Implementations ------------------------------------------------*/
-void change_pass(const uint8_t* new_pass) {
-    free(received_password);
-    password = new_pass;
-    received_password = (uint8_t *)malloc(strlen(password) + 1);
-    received_password[strlen(password)] = '\0';
+Std_ReturnType system_config(void) {
+    Std_ReturnType ret = E_OK;
+    uint8_t counter = 0, received_digit = 0, digit_num = 0, second_pass[MAX_PASS_DIGITS] = {'\0'}, 
+    attempts_num = 0;
+    static uint8_t first_pass[MAX_PASS_DIGITS] = {'\0'};
+    while (1) {
+        ret |= take_digit_from_user(&received_digit, digit_num);
+        // If the required password digits received
+        // Indicator : Enter (CR)
+        if (13 == received_digit) {
+            // If received password is correct :
+            if (1 == counter) {
+                if (!strcmp(first_pass, second_pass)) { 
+                    password = first_pass;
+                    ret |= second_pass_matched_callback_fun();
+                    counter++;
+                }
+                // If received password does not match the first one :
+                else {
+                    ret |= second_pass_mismatched_callback_fun();
+                    counter = 0;
+                    first_pass[digit_num] = '\0';
+                    second_pass[digit_num] = '\0';
+                }
+            }
+            else if (0 == counter){
+                counter++;
+                ret |= first_pass_received_callback_fun();
+            }
+            else {
+                allowed_access_attempts = attempts_num - '0';
+                ret |= allowed_access_attempts_received_callback_fun();
+                break;
+            }
+            digit_num = 0;
+            received_digit = 0;
+        }
+        else if (received_digit) {
+            // Backspace
+            if (8 == received_digit) {
+                if (0 != digit_num) {
+                    digit_num--;
+                }
+            }
+            else if (digit_num < MAX_PASS_DIGITS) {
+                if (1 == counter) {
+                    second_pass[digit_num] = received_digit;
+                }
+                else if (0 == counter) {
+                    first_pass[digit_num] = received_digit;
+                }
+                else {
+                    attempts_num = received_digit;
+                }
+                digit_num++;
+            }
+            else {
+                /* Nothing */
+            }
+            received_digit = 0;
+        }
+        else {
+            /* Nothing */
+        }
+    }
+    return ret;
 }
