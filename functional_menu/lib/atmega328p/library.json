@@ -1,0 +1,16 @@
+{
+  "name": "atmega328p",
+  "version": "1.0.0",
+  "description": "Library for atmega328p drivers",
+  "authors": [
+    {
+      "name": "Abdulrhman Bahaa",
+      "email": "abdulrman.baaa85@gmail.com",
+      "url": "https://yourwebsite.com"
+    }
+  ],
+  "build": {
+    "extraFlags": "-DBUTTON_LIBRARY_ENABLED",
+    "libArchive": false
+  }
+}
