@@ -44,6 +44,7 @@ class Drone:
         self.__arms_number = int(propellers_number / 2)
         self.__frame_to_frame_angle = (pi * 2) / propellers_number
         self.__propeller_y = motor_shaft_length
+        propeller_rotation = -1
 
         self.__static_parts = []
         self.dynamic_parts = []
@@ -65,6 +66,7 @@ class Drone:
             self.__frame_to_x_angle = (1 + (i * 2)) * (self.__frame_to_frame_angle / 2)
             self.__motor_shaft_x = ( self.__frame_length / 2) * cos(self.__frame_to_x_angle)
             self.__motor_shaft_z = ( self.__frame_length / 2) * sin(self.__frame_to_x_angle)
+            propeller_rotation = propeller_rotation * -1
 
             # Objects
             # Drone arms
@@ -92,8 +94,8 @@ class Drone:
             self.__static_parts.append(self.__motor_base2)
 
             # Propellers
-            self.__propeller1 = propeller(pos=vec(self.__motor_shaft_x, self.__propeller_y, self.__motor_shaft_z), propeller_length=propellers_length)
-            self.__propeller2 = propeller(pos=vec(-self.__motor_shaft_x, self.__propeller_y, -self.__motor_shaft_z), propeller_length=propellers_length)
+            self.__propeller1 = propeller(pos=vec(self.__motor_shaft_x, self.__propeller_y, self.__motor_shaft_z), propeller_length=propellers_length, rotation=propeller_rotation)
+            self.__propeller2 = propeller(pos=vec(-self.__motor_shaft_x, self.__propeller_y, -self.__motor_shaft_z), propeller_length=propellers_length, rotation=propeller_rotation)
             self.dynamic_parts.append(self.__propeller1)
             self.dynamic_parts.append(self.__propeller2)
 
