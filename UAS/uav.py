@@ -36,7 +36,7 @@ def propeller(pos=vec(0, 0, 0), propeller_length=0.5, rotation=1):
 
 # Classes
 class Drone:
-    def __init__(self, pos=vec(0, 0, 0), propellers_number=4, propellers_length=0.55, frame_length=2 * 0.55, frame_thickness=0.05, motor_shaft_length = 0.25, motor_height=0.2):
+    def __init__(self, propellers_number=4, propellers_length=0.55, frame_length=2 * 0.55, frame_thickness=0.05, motor_shaft_length = 0.25, motor_height=0.2):
         # Variables
         self.__propellers_number = propellers_number
         self.__motor_shaft_length = motor_shaft_length
@@ -100,3 +100,14 @@ class Drone:
             self.dynamic_parts.append(self.__propeller2)
 
         self.__drone = compound(self.__static_parts, origin=vec(0, 0, 0))
+
+    def move(self, pos):
+        self.__drone.pos = pos
+        # Propellers
+        self.__propeller_y = pos.y + self.__motor_shaft_length
+        for i in range(self.__propellers_number):
+            self.__frame_to_x_angle = (1 + (i * 2)) * (self.__frame_to_frame_angle / 2)
+            self.__propeller_x = ((self.__frame_length / 2) * cos(self.__frame_to_x_angle)) + pos.x
+            self.__propeller_z = ((self.__frame_length / 2) * sin(self.__frame_to_x_angle)) + pos.z
+            
+            self.dynamic_parts[i].pos = vec(self.__propeller_x, self.__propeller_y, self.__propeller_z)
