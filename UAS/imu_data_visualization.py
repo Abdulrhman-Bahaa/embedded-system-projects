@@ -5,7 +5,7 @@ import serial
 PORT = '/dev/ttyACM0'
 BAUD_RATE = 9600
 
-# Configure the scene zoom
+# Configure the scene
 scene.autoscale = False 
 scene.range = 1.5
 scene.width = 1850
@@ -43,4 +43,3 @@ while True:
     uav1.yaw(1, psi)
     uav1.pitch(1, -theta)
     uav1.roll(1, -phi)
-
