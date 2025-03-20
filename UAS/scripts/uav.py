@@ -34,6 +34,7 @@ def propeller(pos=vec(0, 0, 0), propeller_length=0.5, rotation=1):
     part3.rotate(angle=radians(-10 * rotation))
     return compound([part1, part2, part3] , origin=pos)
 
+
 # Classes
 class Drone:
     def __init__(self, propellers_number=4, propellers_length=0.55, frame_length=2 * 0.55, frame_thickness=0.05, motor_shaft_length = 0.25, motor_height=0.2):
@@ -48,6 +49,10 @@ class Drone:
 
         self.__static_parts = []
         self.dynamic_parts = []
+
+        self.psi = 0
+        self.theta = 0
+        self.phi = 0
 
         self.__prev_psi = 0
         self.__prev_theta = 0
@@ -101,7 +106,13 @@ class Drone:
 
         self.__drone = compound(self.__static_parts, origin=vec(0, 0, 0))
 
-    def move(self, pos):
+
+    @property
+    def pos(self): 
+        return self.__drone.pos 
+
+    @pos.setter
+    def pos(self, pos):
         self.__drone.pos = pos
         # Propellers
         self.__propeller_y = pos.y + self.__motor_shaft_length
@@ -109,10 +120,14 @@ class Drone:
             self.__frame_to_x_angle = (1 + (i * 2)) * (self.__frame_to_frame_angle / 2)
             self.__propeller_x = ((self.__frame_length / 2) * cos(self.__frame_to_x_angle)) + pos.x
             self.__propeller_z = ((self.__frame_length / 2) * sin(self.__frame_to_x_angle)) + pos.z
-            
+
             self.dynamic_parts[i].pos = vec(self.__propeller_x, self.__propeller_y, self.__propeller_z)
 
-    def yaw(self, degree, psi):
+    def rotate_propellers(self):
+        for i in range(self.__propellers_number):
+            self.dynamic_parts[i].rotate(axis=self.dynamic_parts[i].up, angle=degrees(0.0005), origin=self.dynamic_parts[i].origin)
+
+    def yaw(self, degree, cumulate, psi):
         if (degree == 1):
             psi = radians(psi)
 
@@ -124,21 +139,29 @@ class Drone:
             self.dynamic_parts[i].rotate(axis=k, angle=steps, origin=self.__drone.origin)   
 
         self.__prev_psi = psi
+        self.psi = psi
+        self.rotate_propellers()
 
-    def pitch(self, degree, theta):
+    def pitch(self, degree, cumulate, theta):
         if (degree == 1):
             theta = radians(theta)
-
+        
         k = cross(self.__drone.axis, self.__drone.up)
-        steps = theta - self.__prev_theta
+        if (cumulate == 0):
+            steps = theta - self.__prev_theta
+            self.theta = theta
+        else:
+            steps = theta
+            self.theta = theta + self.theta
 
         self.__drone.rotate(axis=k, angle=steps, origin=self.__drone.origin)
         for i in range(self.__propellers_number):
             self.dynamic_parts[i].rotate(axis=k, angle=steps, origin=self.__drone.origin)   
 
         self.__prev_theta = theta
+        self.rotate_propellers()
 
-    def roll(self, degree, phi):
+    def roll(self, degree, cumulate, phi):
         if (degree == 1):
             phi = radians(phi)
 
@@ -150,3 +173,7 @@ class Drone:
             self.dynamic_parts[i].rotate(axis=k, angle=steps , origin=self.__drone.origin)   
 
         self.__prev_phi = phi
+        self.theta = phi
+        self.rotate_propellers()
+
+
