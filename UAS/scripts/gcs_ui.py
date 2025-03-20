@@ -64,7 +64,7 @@ def data_visualization():
     if (round(current_time) % 60) != 0 :
         phi_sp_curve.plot(current_time, sp)
         phi_pv_curve.plot(current_time, data_from_uav[2])
-        phi_control_curve.plot(current_time, data_from_uav[3])
+        phi_control_curve.plot(current_time, data_from_uav[3] + data_from_uav[4] + data_from_uav[5])
     else :
         phi_sp_curve.delete()
         phi_pv_curve.delete()
