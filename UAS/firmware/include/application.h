@@ -11,9 +11,7 @@
 
 /* Includes -----------------------------------------------------------------*/
 #include "imu.h"
-#include "uav_gcs.h"
-#include <SoftwareSerial.h>
-
+#include "gcs.h"
 
 /* Macro Declarations -------------------------------------------------------*/
 // Motors wiring
