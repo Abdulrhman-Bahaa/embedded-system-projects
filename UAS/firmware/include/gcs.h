@@ -39,8 +39,8 @@ extern float data_from_gcs[DATA_FROM_GCS_ARRAY_SIZE];
 
 /* Functions Declarations ---------------------------------------------------*/
 void gcs_init();
-void send_to_gcs(PidController *controller, float euler_angles[3], float motors_pwm[4]);
+void send_to_gcs(PidController *controller, float euler_angles[3], uint8_t motors_pwm[4]);
 void receive_from_gcs(PidController *controller, float data_from_gcs[DATA_FROM_GCS_ARRAY_SIZE]);
-void gcs_interface(PidController *controller, float euler_angles[3], float motors_pwm[4], float data_from_gcs[DATA_FROM_GCS_ARRAY_SIZE]);
+void gcs_interface(PidController *controller, float euler_angles[3], uint8_t motors_pwm[4], float data_from_gcs[DATA_FROM_GCS_ARRAY_SIZE]);
 
 #endif	/* UAV_GCS_H */
