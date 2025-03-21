@@ -4,16 +4,10 @@ This repository contains various **embedded systems projects** that I am working
 
 ## Projects Included  
 ### UAV Project  
-🚀 A small drone project focused on:  
+A small drone project focused on:  
 - Implementing a **PID controller** for stability  
 - Sensor fusion using an **IMU**  
-- PWM control for **motor speed adjustment**  
-
-### Security System  
-🔐 A security system designed for:  
-- **Wireless communication** for remote access  
-- **RFID/NFC authentication**  
-- Potential integration with **IoT features**  
+- PWM control for **motor speed adjustment**   
 
 ## Why I Made This Repo  
 I am learning **embedded systems engineering**, and I use these projects to:  
