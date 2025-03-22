@@ -10,6 +10,7 @@
 #define	APPLICATION_H
 
 /* Includes -----------------------------------------------------------------*/
+#include "mcal_std_types.h"
 #include "imu.h"
 #include "gcs.h"
 
@@ -36,5 +37,11 @@
 /* Variables Declarations ---------------------------------------------------*/
 
 /* Functions Declarations ---------------------------------------------------*/
+/**
+ * @brief       This function will include calls of functions to initialize 
+ *              application's interfaces
+ * @return      Returns E_OK(0x01) or E_NOT_OK(0x00) (succeeded and not succeeded)
+*/
+Std_ReturnType application_initialize(void);
 
 #endif	/* APPLICATION_H */
