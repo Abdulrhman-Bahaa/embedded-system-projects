@@ -2,31 +2,34 @@
 import serial, time
 from uav import *
 import vpython as vp
-
+from math import ceil
 
 # Variables Definitions ----------------------------------------------------
 # Serial
 # PORT = '/dev/rfcomm0'
 PORT = '/dev/tnt1'
+# PORT = '/dev/ttyACM0'
 BAUD_RATE = 57600
-SERIAL = False
+SERIAL = 1
 
 # Drone
 UAV_MIN_ALTITUDE = 0.148
 UAV_ALTITUDE = 1
 
-# Code
-stop = 0
-
-# psi, theta, phi, proportional_term, integral_term, derivative_term. pwm0, pwm1, pwm2, pwm3
-data_from_uav = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-
+# psi, theta, phi, proportional_term, integral_term, derivative_term. pwm0, pwm1, pwm2, pwm3, debug0, debug1, debug2
+data_from_uav = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 # Spin motors(1)/Stop motors(0), kp, ki, kd, ka, sp
 data_to_uav = [0, 0, 0, 0, 0, 0]
-
 input_text = ['Spin motors', 'Stop motors', 'Kp', 'Ki', 'Kd', 'Ka', 'SP']
 
+graphs_xmax = 60
+
+
+xmax_reached_num = 0
+scale_time = 0
 sp = 0
+# Code
+stop = 0
 
 # Functions ------------------------------------------------------------------
 def send_data(data):
@@ -46,10 +49,12 @@ def keyInput(evt):
         stop = 1
 
 def data_visualization():
+    global scale_time
+    global xmax_reached_num
     current_time = time.time() - start_time
 
     # Animate the drone orientation
-    uav1.roll(1, 0, -data_from_uav[2])  
+    uav1.roll(1, 0, data_from_uav[2])  
 
     # Propellers speed labels
     propeller1_speed_label.text = str((data_from_uav[6] / 256) * 100) + '%'
@@ -58,20 +63,39 @@ def data_visualization():
     propeller4_speed_label.text = str((data_from_uav[9] / 256) * 100) + '%'
 
     # Text output
-    state_variables_wtext.text=' |\tError = {}°\tPsi = {}°\tTheta = {}°\tPhi = {}°\tAltitude = {}m'.format(sp - data_from_uav[2], data_from_uav[0], data_from_uav[1], data_from_uav[2], 0)
+    state_variables_wtext.text=' |\tError = {}°\tPsi = {}°\tTheta = {}°\tPhi = {}°\AccError = {}m'.format(sp - data_from_uav[2], data_from_uav[10], data_from_uav[11], data_from_uav[2], data_from_uav[12])
 
     # Ploting on graphs
-    if (round(current_time) % 60) != 0 :
-        phi_sp_curve.plot(current_time, sp)
-        phi_pv_curve.plot(current_time, data_from_uav[2])
-        phi_control_curve.plot(current_time, data_from_uav[3] + data_from_uav[4] + data_from_uav[5])
-    else :
+    # Check if scaling required
+    if (round(current_time % graphs_xmax, 1) == 0) and ((current_time - scale_time) > 1) :
+        scale_time = current_time
         phi_sp_curve.delete()
         phi_pv_curve.delete()
         phi_control_curve.delete()
+        phi_proportional_term_curve.delete()
+        phi_integral_term_curve.delete()
+        phi_derivative_term_curve.delete()
         phi_sp_curve.data = []
         phi_pv_curve.data = []
         phi_control_curve.data = []
+        phi_proportional_term_curve.data = []
+        phi_integral_term_curve.data = []
+        phi_derivative_term_curve.data = []
+
+        graph1.xmin = graphs_xmax + (graphs_xmax * xmax_reached_num)
+        graph2.xmin = graphs_xmax + (graphs_xmax * xmax_reached_num)
+
+        graph1.xmax = graph1.xmin + graphs_xmax
+        graph2.xmax = graph2.xmin + graphs_xmax
+
+        xmax_reached_num = xmax_reached_num + 1
+    else:
+        phi_sp_curve.plot(current_time, sp)
+        phi_pv_curve.plot(current_time, data_from_uav[2])
+        phi_control_curve.plot(current_time, data_from_uav[3] + data_from_uav[4] + data_from_uav[5])
+        phi_proportional_term_curve.plot(current_time, data_from_uav[3])
+        phi_integral_term_curve.plot(current_time, data_from_uav[4])
+        phi_derivative_term_curve.plot(current_time, data_from_uav[5])
 
 
 # Vpython scene configurations -----------------------------------------------------
@@ -121,13 +145,16 @@ propeller3_speed_label = label(pos=vec(-0.4, UAV_MIN_ALTITUDE + 1.1, -0.4), text
 propeller4_speed_label = label(pos=vec(0.4, UAV_MIN_ALTITUDE + 1.1, -0.4), text='4', xoffset=20, yoffset=50, space=30, height=16, border=4, font='sans')
 
 # Graphs -------------------------
-graph1 = graph(title='Process variable φ(t)', align='left', xtitle='Time(ms)', fast=True, ytitle='Angle(°)',xmin=0, xmax=30, height=440, width=800, scroll=True)
-graph2 = graph(title='Control signal u(t)', align='right', xtitle='Time(ms)', fast=True, xmin=0, xmax=30, height=440, width=800, scroll=True)
+graph1 = graph(title='Process variable φ(t)', align='left', xtitle='Time(s)', fast=False, ytitle='Angle(°)',xmin=0, xmax=graphs_xmax, height=440, width=800, scroll=False)
+graph2 = graph(title='Control signal u(t)', align='right', xtitle='Time(s)', fast=False, xmin=0, xmax=graphs_xmax, height=440, width=800, scroll=False)
 
 # Curves -------------------------
 phi_pv_curve = gcurve(color=color.green, label='φ(t)', graph=graph1)
 phi_sp_curve = gcurve(color=color.black, label='sp', graph=graph1)
 phi_control_curve = gcurve(color=color.blue, label='u(t)', graph=graph2)
+phi_proportional_term_curve = gcurve(color=color.cyan, label='P', graph=graph2)
+phi_integral_term_curve = gcurve(color=color.magenta, label='I', graph=graph2)
+phi_derivative_term_curve = gcurve(color=color.purple, label='D', graph=graph2)
 
 
 # Main while loop -----------------------------------------------------------------
@@ -141,9 +168,11 @@ if SERIAL == 1:
                 line = ser.readline().decode('utf-8', errors='ignore').strip()  # Read and decode
                 # Split by comma
                 data = line.split(',')
-                data_from_uav = [float(x) for x in data]  # Convert all to integers
-                data_visualization()
+                if (len(data) == len(data_from_uav)) :
+                    data_from_uav = [float(x) for x in data]  # Convert all to integers
+                    data_visualization()
             except Exception as er:
+                print(er)
                 pass
 else :
     start_time = time.time()
