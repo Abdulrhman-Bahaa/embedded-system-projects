@@ -1,31 +1,7 @@
 from vpython import *
 import numpy as np
 
-def propeller(pos=vec(0, 0, 0), propeller_length=0.5, rotation=1):
-    """
-    Initializes a Propeller.
-
-    Parameters:
-    pos (vector): The position of the propeller (default is vec(0, 0, 0)).
-    propeller_length (float): The length of the propeller (default is 0.5, must be positive).
-    rotation (int): The direction in which the propeller rotates (default is 1 (CW). -1 (CCW))
-
-    Raises:
-    TypeError: If pos is not a Vector instance.
-    ValueError: If propeller_length is negative or rotation neither 1 nor -1.
-    """
-    # Validate pos
-    if not isinstance(pos, vector):
-        raise TypeError("pos must be an instance of vector.")
-
-    # Validate propeller_length
-    if not isinstance(propeller_length, (int, float)) or propeller_length <= 0:
-        raise ValueError("propeller_length must be a positive number.")
-
-    # Validate rotation
-    if rotation not in (1, -1):
-        raise ValueError("rotation must be 1 (CW) or -1 (CCW).")
-    
+def propeller(pos=vec(0, 0, 0), propeller_length=0.5, rotation=1):  
     # Objects
     part1 = sphere(pos=pos, radius=0.025 * propeller_length, color=color.black)
     part2 = ellipsoid(pos=vec(pos.x + (propeller_length / 4) + part1.radius - 0.01 , pos.y, pos.z) , size=vec((propeller_length/ 2), 0.01 * propeller_length, (propeller_length/ 2) / 5.5),  color=color.black)
@@ -37,7 +13,7 @@ def propeller(pos=vec(0, 0, 0), propeller_length=0.5, rotation=1):
 
 # Classes
 class Drone:
-    def __init__(self, propellers_number=4, propellers_length=0.55, frame_length=2 * 0.55, frame_thickness=0.05, motor_shaft_length = 0.25, motor_height=0.2):
+    def __init__(self, propellers_number=4, propellers_length=0.55, frame_length=2 * 0.55, frame_thickness=0.05, motor_shaft_length = 0.25, motor_height=0.2, show_labels=True):
         # Variables
         self.__propellers_number = propellers_number
         self.__motor_shaft_length = motor_shaft_length
@@ -49,6 +25,8 @@ class Drone:
 
         self.__static_parts = []
         self.dynamic_parts = []
+        self.propellers_labels = []
+        self.show_labels = show_labels
 
         self.psi = 0
         self.theta = 0
@@ -99,10 +77,17 @@ class Drone:
             self.__static_parts.append(self.__motor_base2)
 
             # Propellers
-            self.__propeller1 = propeller(pos=vec(self.__motor_shaft_x, self.__propeller_y, self.__motor_shaft_z), propeller_length=propellers_length, rotation=propeller_rotation)
-            self.__propeller2 = propeller(pos=vec(-self.__motor_shaft_x, self.__propeller_y, -self.__motor_shaft_z), propeller_length=propellers_length, rotation=propeller_rotation)
-            self.dynamic_parts.append(self.__propeller1)
-            self.dynamic_parts.append(self.__propeller2)
+            propeller1 = propeller(pos=vec(self.__motor_shaft_x, self.__propeller_y, self.__motor_shaft_z), propeller_length=propellers_length, rotation=propeller_rotation)
+            propeller2 = propeller(pos=vec(-self.__motor_shaft_x, self.__propeller_y, -self.__motor_shaft_z), propeller_length=propellers_length, rotation=propeller_rotation)
+
+            if self.show_labels == True:
+                propeller1_label = label(pos=vec(self.__motor_shaft_x, self.__propeller_y - 0.1, self.__motor_shaft_z), text='1', xoffset=20, yoffset=50, space=30, height=16, border=4, font='sans')
+                propeller2_label = label(pos=vec(-self.__motor_shaft_x, self.__propeller_y - 0.1, -self.__motor_shaft_z), text='1', xoffset=20, yoffset=50, space=30, height=16, border=4, font='sans')
+                self.propellers_labels.append(propeller1_label)
+                self.propellers_labels.append(propeller2_label)
+
+            self.dynamic_parts.append(propeller1)
+            self.dynamic_parts.append(propeller2)
 
         self.__drone = compound(self.__static_parts, origin=vec(0, 0, 0))
 
@@ -122,6 +107,8 @@ class Drone:
             self.__propeller_z = ((self.__frame_length / 2) * sin(self.__frame_to_x_angle)) + pos.z
 
             self.dynamic_parts[i].pos = vec(self.__propeller_x, self.__propeller_y, self.__propeller_z)
+            if self.show_labels == True:
+                self.propellers_labels[i].pos = vec(self.__propeller_x, self.__propeller_y - 0.1 , self.__propeller_z)
 
     def rotate_propellers(self):
         for i in range(self.__propellers_number):
@@ -137,6 +124,8 @@ class Drone:
         self.__drone.rotate(axis=k, angle=steps, origin=self.__drone.origin)
         for i in range(self.__propellers_number):
             self.dynamic_parts[i].rotate(axis=k, angle=steps, origin=self.__drone.origin)   
+            if self.show_labels == True:
+                self.propellers_labels[i].rotate(axis=k, angle=steps, origin=self.__drone.origin)   
 
         self.__prev_psi = psi
         self.psi = psi
@@ -156,7 +145,9 @@ class Drone:
 
         self.__drone.rotate(axis=k, angle=steps, origin=self.__drone.origin)
         for i in range(self.__propellers_number):
-            self.dynamic_parts[i].rotate(axis=k, angle=steps, origin=self.__drone.origin)   
+            self.dynamic_parts[i].rotate(axis=k, angle=steps, origin=self.__drone.origin)
+            if self.show_labels == True:
+                self.propellers_labels[i].rotate(axis=k, angle=steps, origin=self.__drone.origin)
 
         self.__prev_theta = theta
         self.rotate_propellers()
@@ -170,10 +161,11 @@ class Drone:
 
         self.__drone.rotate(axis=k, angle=steps , origin=self.__drone.origin)
         for i in range(self.__propellers_number):
-            self.dynamic_parts[i].rotate(axis=k, angle=steps , origin=self.__drone.origin)   
+            self.dynamic_parts[i].rotate(axis=k, angle=steps , origin=self.__drone.origin)  
+            if self.show_labels == True:
+                self.propellers_labels[i].rotate(axis=k, angle=steps, origin=self.__drone.origin) 
 
         self.__prev_phi = phi
         self.theta = phi
         self.rotate_propellers()
-
 
