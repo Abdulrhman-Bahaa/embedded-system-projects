@@ -53,7 +53,7 @@ UAV_PROPELLERS_NUM = 4
 # Values must be put in 'wtext_text_function' function
 wtext_text = '\t| Psi = {}°\t| Theta = {}°\t| Phi = {}°\t| Phi sp = {}°\t| Phi error = {}°\t| Debug 0 = {}\t| Debug 1 = {}\t| Debug 2 = {}'
 
-graphs_xmax = 60
+graphs_xmax = 30
 
 # Not configurable variables
 old_range = (-1, 1)
@@ -73,7 +73,7 @@ def send_to_uav(evt):
     global phi_sp
     data_to_uav[evt.id] = evt.number
     phi_sp = data_to_uav['phi_sp']
-    send_data(','.join(map(str, data_to_uav)))
+    send_data(','.join(map(str, data_to_uav.values())))
 
 def keyInput(evt):
     if evt.key == 's':
@@ -193,6 +193,7 @@ ground = box(
 uav1 = Drone(propellers_number=UAV_PROPELLERS_NUM)
 uav1.pos = vec(0, UAV_MIN_ALTITUDE + UAV_ALTITUDE, 0)
 
+scene.append_to_caption('\n\t')
 # Inputs
 for key, value in data_to_uav.items():
     scene.append_to_caption(' ')
@@ -203,6 +204,7 @@ for key, value in data_to_uav.items():
 scene.append_to_caption('\t')
 state_variables_wtext = wtext()
 
+scene.append_to_caption('\n' * 5)
 # Graphs 
 graph1 = graph(title='Process variable φ(t)', align='left', xtitle='Time(s)', fast=False, ytitle='Angle(°)',xmin=0, xmax=graphs_xmax, height=440, width=800, scroll=False)
 graph2 = graph(title='Control signal u(t)', align='right', xtitle='Time(s)', fast=False, xmin=0, xmax=graphs_xmax, height=440, width=800, scroll=False)
