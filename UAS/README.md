@@ -1,1 +1,1 @@
-![Alt Text](../images/gcs_ui.png)
+![image](/images/gcs_ui.png)
