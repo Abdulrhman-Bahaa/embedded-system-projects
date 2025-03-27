@@ -8,10 +8,10 @@ import pygame
 bluetooth_port = '/dev/rfcomm0'
 simulation_port = '/dev/tnt1'
 arduino_board_port = '/dev/ttyACM0'
-PORT = simulation_port
+PORT = bluetooth_port
 BAUD_RATE = 57600
 SERIAL = True
-JOYSTICK_INPUT = False
+JOYSTICK_INPUT = True
 running = True
 
 data_from_uav = {
@@ -99,7 +99,7 @@ def joystick_data(data_to_uav):
                 global phi_sp
                 phi_sp = scale_value(event.value, *old_range, *new_range)
                 data_to_uav['psi_sp'] = phi_sp
-                send_data(','.join(map(str, data_to_uav)))
+                send_data(','.join(map(str, data_to_uav.values())))
             # Vertical axis on the right stick 
             elif event.axis == 4:
                 pass
