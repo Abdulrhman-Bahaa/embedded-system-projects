@@ -8,10 +8,10 @@ import pygame
 bluetooth_port = '/dev/rfcomm0'
 simulation_port = '/dev/tnt1'
 arduino_board_port = '/dev/ttyACM0'
-PORT = bluetooth_port
+PORT = simulation_port
 BAUD_RATE = 57600
 SERIAL = True
-JOYSTICK_INPUT = True
+JOYSTICK_INPUT = False
 running = True
 
 data_from_uav = {
@@ -42,7 +42,7 @@ data_to_uav = {
 phi_sp = data_to_uav['phi_sp']
 
 # Min and max phi angle
-new_range = (-20, 20)
+new_range = (-40, 40)
 
 # Vpython -------------------------
 # Drone
@@ -84,12 +84,23 @@ def scale_value(x, old_min, old_max, new_min, new_max):
     return ((x - old_min) / (old_max - old_min)) * (new_max - new_min) + new_min
 
 def joystick_init():
+    # Initialize pygame
     pygame.init()
+
     # Detect joysticks
     pygame.joystick.init()
     joystick_count = pygame.joystick.get_count()
+
     joystick = pygame.joystick.Joystick(0)
     joystick.init()
+    print(f"Connected to: {joystick.get_name()}")
+
+    if joystick_count == 0:
+        print("No joystick detected!")
+    else:
+        joystick = pygame.joystick.Joystick(0)
+        joystick.init()
+        print(f"Connected to: {joystick.get_name()}")
 
 def joystick_data(data_to_uav):
     for event in pygame.event.get():
@@ -98,11 +109,8 @@ def joystick_data(data_to_uav):
             if event.axis == 3:
                 global phi_sp
                 phi_sp = scale_value(event.value, *old_range, *new_range)
-                data_to_uav['psi_sp'] = phi_sp
+                data_to_uav['phi_sp'] = phi_sp
                 send_data(','.join(map(str, data_to_uav.values())))
-            # Vertical axis on the right stick 
-            elif event.axis == 4:
-                pass
 
 def serial_data(data_from_uav):
     if ser.in_waiting > 0:  # Check if data is available
@@ -229,6 +237,7 @@ start_time = time.time()
 while running == True:
     if JOYSTICK_INPUT == True:
         joystick_data(data_to_uav)
+
     if SERIAL == True:
         serial_data(data_from_uav)
         data_visualization(data_from_uav)
