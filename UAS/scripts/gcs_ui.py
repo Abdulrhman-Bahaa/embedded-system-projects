@@ -4,258 +4,212 @@ from uav import *
 import pygame
 
 # Variables Definitions ----------------------------------------------------
-# Data -------------------------
-bluetooth_port = '/dev/rfcomm0'
-simulation_port = '/dev/tnt1'
-arduino_board_port = '/dev/ttyACM0'
-PORT = simulation_port
-BAUD_RATE = 57600
-SERIAL = True
-JOYSTICK_INPUT = False
-running = True
-
-data_from_uav = {
-    'psi': 0,
-    'theta': 0,
-    'phi': 0,
-    'proportional_term': 0,
-    'integral_term': 0,
-    'derivative_term': 0,
-    'pwm0': 0,
-    'pwm1': 0,
-    'pwm2': 0,
-    'pwm3': 0,
-    'debug0': 0,
-    'debug1': 0,
-    'debug2': 0
-}
-
-data_to_uav = {
-    'motors_state': 0,
-    'kp': 0,
-    'ki': 0,
-    'kd': 0,
-    'ka': 0,
-    'phi_sp': 0
-}
-
-phi_sp = data_to_uav['phi_sp']
-
 # Min and max phi angle
 new_range = (-40, 40)
 
-# Vpython -------------------------
-# Drone
-UAV_MIN_ALTITUDE = 0.148
-UAV_ALTITUDE = 1
-UAV_PROPELLERS_NUM = 4
-
-# Values must be put in 'wtext_text_function' function
-wtext_text = '\t| Psi = {}°\t| Theta = {}°\t| Phi = {}°\t| Phi sp = {}°\t| Phi error = {}°\t| Debug 0 = {}\t| Debug 1 = {}\t| Debug 2 = {}'
-
-graphs_xmax = 30
-
 # Not configurable variables
 old_range = (-1, 1)
-xmax_reached_num = 0
-scale_time = 0
-run_engine_counter = 0
 
 # Functions ------------------------------------------------------------------
-def wtext_text_function():
-    return [data_from_uav['psi'], data_from_uav['theta'], data_from_uav['phi'], phi_sp, phi_sp -  data_from_uav['phi'], data_from_uav['debug0'], data_from_uav['debug1'], data_from_uav['debug2']]
-
-def send_data(data):
-    data += '\n'
-    ser.write(data.encode())
-
-def send_to_uav(evt):
-    global phi_sp
-    data_to_uav[evt.id] = evt.number
-    phi_sp = data_to_uav['phi_sp']
-    send_data(','.join(map(str, data_to_uav.values())))
-
-def keyInput(evt):
-    if evt.key == 's':
-        global running
-        running = False
-
 def scale_value(x, old_min, old_max, new_min, new_max):
     return ((x - old_min) / (old_max - old_min)) * (new_max - new_min) + new_min
 
-def joystick_init():
-    # Initialize pygame
-    pygame.init()
+# Classes --------------------------------------------------------------------
+class DroneSimulation:
+    def __init__(self, uav, data_from_uav, data_to_uav, graphs_xmax, ser=None, joystick_input=False):
+        """Initialize the simulation with all VPython objects."""
+        
+        # Store external parameters
+        self.data_to_uav = data_to_uav
+        self.data_from_uav = data_from_uav
+        self.data_to_uav_length = len(vars(data_to_uav))
+        self.data_from_uav_length = len(vars(data_from_uav))
+        self.graphs_xmax = graphs_xmax
+        self.uav_min_altitude = 0.148    
+        self.first_visualization = True
+        self.visualization_start_time = 0
+        self.visualization_current_time = 0
+        self.scale_time = 0
+        self.xmax_reached_num = 0
+        self.joystick_input = joystick_input
 
-    # Detect joysticks
-    pygame.joystick.init()
-    joystick_count = pygame.joystick.get_count()
+        if ser is None:
+            print("No serial provided")
+        else:
+            self.ser = ser 
 
-    joystick = pygame.joystick.Joystick(0)
-    joystick.init()
-    print(f"Connected to: {joystick.get_name()}")
+        # Scene configs
+        self.scene_setup()
+        
+        # Create ground
+        self.ground = box(
+            pos=vector(0, -0.05, 0),
+            size=vector(100, 0.1, 100),
+            color=color.green,
+            texture=textures.rough
+        )
 
-    if joystick_count == 0:
-        print("No joystick detected!")
-    else:
-        joystick = pygame.joystick.Joystick(0)
-        joystick.init()
-        print(f"Connected to: {joystick.get_name()}")
+        # Create the drone 3d model
+        self.uav = uav
+        self.uav.pos = vec(0, self.uav_min_altitude, 0)
 
-def joystick_data(data_to_uav):
-    for event in pygame.event.get():
-        if event.type == pygame.JOYAXISMOTION:
-            # Horizontal axis on the right stick (performing roll)
-            if event.axis == 3:
-                global phi_sp
-                phi_sp = scale_value(event.value, *old_range, *new_range)
-                data_to_uav['phi_sp'] = phi_sp
-                send_data(','.join(map(str, data_to_uav.values())))
+        # Create input fields
+        self.create_inputs()
 
-def serial_data(data_from_uav):
-    if ser.in_waiting > 0:  # Check if data is available
-        # Read a line from Arduino
-        try:
-            line = ser.readline().decode('utf-8', errors='ignore').strip()  # Read and decode
-            # Split by comma
-            data = line.split(',')
-            data = [float(x) for x in data]
-            if len(data_from_uav) == len(data):
-                i = 0
-                for key, value in data_from_uav.items():
-                    data_from_uav[key] = data[i]
-                    i = i + 1
-        except Exception as e:
-            print(e)
+        # Create text output
+        self.wtext_text = '\t| Psi = {}°\t| Theta = {}°\t| Phi = {}°\t| Phi sp = {}°\t| Phi error = {}°\t| Debug 0 = {}\t| Debug 1 = {}\t| Debug 2 = {}'
+        self.state_variables_wtext = wtext(text=self.wtext_text.format(0, 0, 0, 0, 0, 0, 0, 0))
+        
+        # Create graphs
+        self.create_graphs()
 
-def data_visualization(data_from_uav):
-    global scale_time
-    global xmax_reached_num
-    current_time = time.time() - start_time
+    def scene_setup(self):
+        """Vpython scene configurations"""
+        scene.width = 1900
+        scene.height = 390
+        scene.background=color.cyan
+        scene.autoscale = False
+        scene.range = 1
+        scene.center = vec(0, self.uav_min_altitude, 0)
+        scene.forward = vec(1,  -0.5, 0)
+        scene.align = 'none'
 
-    # Text output
-    state_variables_wtext.text = wtext_text.format(*wtext_text_function())
+    def create_inputs(self):
+        """Create user input fields for control variables."""
+        scene.append_to_caption('\n\t')
+        for key, value in vars(self.data_to_uav).items():
+            scene.append_to_caption(' ')
+            wtext(text=key + ' = ')
+            winput(bind=self.winput_data_handler, type='numeric', id=key)
 
-    # Animate the drone orientation
-    uav1.roll(1, 0, data_from_uav['phi'])  
+        scene.append_to_caption('\t')
 
-    # Propellers speed labels
-    uav1.propellers_labels[0].text = str((data_from_uav['pwm0'] / 256) * 100) + '%'
-    uav1.propellers_labels[1].text = str((data_from_uav['pwm1'] / 256) * 100) + '%'
-    uav1.propellers_labels[2].text = str((data_from_uav['pwm2'] / 256) * 100) + '%'
-    uav1.propellers_labels[3].text = str((data_from_uav['pwm3'] / 256) * 100) + '%'
+    def create_graphs(self):
+        """Create graphs for the simulation."""
+        scene.append_to_caption('\n' * 5)
 
-    # Ploting on graphs
-    # Check if scaling required
-    if (round(current_time % graphs_xmax, 1) == 0) and ((current_time - scale_time) > 1) :
-        scale_time = current_time
-        phi_sp_curve.delete()
-        phi_pv_curve.delete()
-        phi_control_curve.delete()
-        phi_proportional_term_curve.delete()
-        phi_integral_term_curve.delete()
-        phi_derivative_term_curve.delete()
-        phi_sp_curve.data = []
-        phi_pv_curve.data = []
-        phi_control_curve.data = []
-        phi_proportional_term_curve.data = []
-        phi_integral_term_curve.data = []
-        phi_derivative_term_curve.data = []
+        # Graphs
+        self.graph1 = graph(title='Process variable φ(t)', align='left',
+                            xtitle='Time(s)', fast=False, ytitle='Angle(°)',
+                            xmin=0, xmax=self.graphs_xmax, height=440, width=800, scroll=False)
 
-        graph1.xmin = graphs_xmax + (graphs_xmax * xmax_reached_num)
-        graph2.xmin = graphs_xmax + (graphs_xmax * xmax_reached_num)
+        self.graph2 = graph(title='Control signal u(t)', align='right',
+                            xtitle='Time(s)', fast=False,
+                            xmin=0, xmax=self.graphs_xmax, height=440, width=800, scroll=False)
 
-        graph1.xmax = graph1.xmin + graphs_xmax
-        graph2.xmax = graph2.xmin + graphs_xmax
+        # Curves
+        self.phi_pv_curve = gcurve(color=color.green, label='φ(t)', graph=self.graph1)
+        self.phi_sp_curve = gcurve(color=color.black, label='sp', graph=self.graph1)
+        self.phi_control_curve = gcurve(color=color.blue, label='u(t)', graph=self.graph2)
+        self.phi_proportional_term_curve = gcurve(color=color.cyan, label='P', graph=self.graph2)
+        self.phi_integral_term_curve = gcurve(color=color.magenta, label='I', graph=self.graph2)
+        self.phi_derivative_term_curve = gcurve(color=color.purple, label='D', graph=self.graph2)
 
-        xmax_reached_num = xmax_reached_num + 1
-    else:
-        phi_sp_curve.plot(current_time, data_to_uav['phi_sp'])
-        phi_pv_curve.plot(current_time, data_from_uav['phi'])
-        phi_control_curve.plot(current_time, data_from_uav['proportional_term'] + data_from_uav['integral_term'] + data_from_uav['derivative_term'])
-        phi_proportional_term_curve.plot(current_time, data_from_uav['proportional_term'])
-        phi_integral_term_curve.plot(current_time, data_from_uav['integral_term'])
-        phi_derivative_term_curve.plot(current_time, data_from_uav['derivative_term'])
+    def receive_from_uav(self):
+        if self.ser.in_waiting > 0:  # Check if data is available
+            # Read a line from Arduino
+            try:
+                line = self.ser.readline().decode('utf-8', errors='ignore').strip()  # Read and decode
+                # Split by comma
+                data = line.split(',')
+                data = [float(x) for x in data]
+                if self.data_from_uav_length == len(data):
+                    i = 0
+                    for key, value in vars(self.data_from_uav).items():
+                        setattr(self.data_from_uav, key, data[i])
+                        i = i + 1
+            except Exception as e:
+                print(e)
 
-# Vpython scene configurations -----------------------------------------------------
-scene.width = 1900
-scene.height = 390
-scene.background=color.cyan
-scene.autoscale = False
-scene.range = 1
-scene.center = vec(0, UAV_MIN_ALTITUDE + 1, 0)
-scene.forward = vec(1,  -0.5, 0)
-scene.align = 'none'
-scene.bind('keydown', keyInput)
+    def send_to_uav(self):
+        data = list(vars(self.data_to_uav).values())
+        data = ','.join(map(str, data))
+        data += '\n'
+        self.ser.write(data.encode())
 
-# Vpython objects -----------------------------------------------------------------
-# Ground plane
-ground = box(
-    pos=vector(0, -0.05, 0),  # Position slightly below the origin
-    size=vector(100, 0.1, 100),  # Length (x), height (y), width (z)
-    color=color.green,  # Choose a color (e.g., green for grass)
-    texture=textures.rough  # Optional: Add a texture (e.g., wood, gravel)
-)
+    def winput_data_handler(self, evt):
+        """Function to send user input values to the UAV."""
+        input_id = evt.id
+        input_value = evt.number
 
-# The drone body
-uav1 = Drone(propellers_number=UAV_PROPELLERS_NUM)
-uav1.pos = vec(0, UAV_MIN_ALTITUDE + UAV_ALTITUDE, 0)
+        setattr(self.data_to_uav, input_id, float(input_value))
 
-scene.append_to_caption('\n\t')
-# Inputs
-for key, value in data_to_uav.items():
-    scene.append_to_caption(' ')
-    wtext(text=key + ' = ')
-    winput(bind=send_to_uav, type='numeric', id=key)
+        self.send_to_uav()
+    
+    def joystick_data_handler(self):
+        for event in pygame.event.get():
+            if event.type == pygame.JOYAXISMOTION:
+                # Horizontal axis on the right stick (performing roll)
+                if event.axis == 3:
+                    self.data_to_uav.phi_sp = scale_value(event.value, *old_range, *new_range)
+                    self.send_to_uav()
 
-# Outputs
-scene.append_to_caption('\t')
-state_variables_wtext = wtext()
+    def gcs_interface(self):
+        """ Responsible of getting data from uav and send commands to it"""
+        # Get data from uav
+        if self.ser:
+            self.receive_from_uav()
+        # Send data to uav
+        if self.joystick_input:
+            self.joystick_data_handler()
+        # winput data will be handled by events handling in vpython (calling 'winput_data_handler' function)"""
 
-scene.append_to_caption('\n' * 5)
-# Graphs 
-graph1 = graph(title='Process variable φ(t)', align='left', xtitle='Time(s)', fast=False, ytitle='Angle(°)',xmin=0, xmax=graphs_xmax, height=440, width=800, scroll=False)
-graph2 = graph(title='Control signal u(t)', align='right', xtitle='Time(s)', fast=False, xmin=0, xmax=graphs_xmax, height=440, width=800, scroll=False)
+    def data_visualize(self):
+        if self.first_visualization:
+            self.visualization_start_time = time.time()
+            self.first_visualization = False
+        self.visualization_current_time = time.time() - self.visualization_start_time
 
-# Curves
-phi_pv_curve = gcurve(color=color.green, label='φ(t)', graph=graph1)
-phi_sp_curve = gcurve(color=color.black, label='sp', graph=graph1)
-phi_control_curve = gcurve(color=color.blue, label='u(t)', graph=graph2)
-phi_proportional_term_curve = gcurve(color=color.cyan, label='P', graph=graph2)
-phi_integral_term_curve = gcurve(color=color.magenta, label='I', graph=graph2)
-phi_derivative_term_curve = gcurve(color=color.purple, label='D', graph=graph2)
+        # Text output
+        state_variables_wtext_values = [self.data_from_uav.psi, self.data_from_uav.theta, 
+                                        self.data_from_uav.phi, self.data_to_uav.phi_sp, 
+                                        self.data_to_uav.phi_sp -  self.data_from_uav.phi, 
+                                        self.data_from_uav.debug0, self.data_from_uav.debug1, 
+                                        self.data_from_uav.debug2]
+        self.state_variables_wtext.text = self.wtext_text.format(*state_variables_wtext_values)
 
-# Initialization -----------------------------------------------------------------
-if SERIAL == True:
-    ser = serial.Serial(PORT, BAUD_RATE, timeout=1)  # Adjust COM port as needed
+        # Animate the drone orientation
+        self.uav.yaw(1, 0, self.data_from_uav.psi)  
+        self.uav.pitch(1, 0, self.data_from_uav.theta)  
+        self.uav.roll(1, 0, self.data_from_uav.phi)  
 
-if JOYSTICK_INPUT == True:
-    joystick_init()
+        # Propellers speed labels
+        self.uav.propellers_labels[0].text = str((self.data_from_uav.pwm0 / 256) * 100) + '%'
+        self.uav.propellers_labels[1].text = str((self.data_from_uav.pwm1 / 256) * 100) + '%'
+        self.uav.propellers_labels[2].text = str((self.data_from_uav.pwm2 / 256) * 100) + '%'
+        self.uav.propellers_labels[3].text = str((self.data_from_uav.pwm3 / 256) * 100) + '%'
 
-start_time = time.time()
-# Main while loop -----------------------------------------------------------------
-while running == True:
-    if JOYSTICK_INPUT == True:
-        joystick_data(data_to_uav)
+        # Ploting on graphs
+        # Check if scaling required
+        if (round(self.visualization_current_time % self.graphs_xmax, 1) == 0) and ((self.visualization_current_time - self.scale_time) > 1) :
+            self.scale_time = self.visualization_current_time
+            self.phi_sp_curve.delete()
+            self.phi_pv_curve.delete()
+            self.phi_control_curve.delete()
+            self.phi_proportional_term_curve.delete()
+            self.phi_integral_term_curve.delete()
+            self.phi_derivative_term_curve.delete()
+            self.phi_sp_curve.data = []
+            self.phi_pv_curve.data = []
+            self.phi_control_curve.data = []
+            self.phi_proportional_term_curve.data = []
+            self.phi_integral_term_curve.data = []
+            self.phi_derivative_term_curve.data = []
 
-    if SERIAL == True:
-        serial_data(data_from_uav)
-        data_visualization(data_from_uav)
+            self.graph1.xmin = self.graphs_xmax + (self.graphs_xmax * self.xmax_reached_num)
+            self.graph2.xmin = self.graphs_xmax + (self.graphs_xmax * self.xmax_reached_num)
 
-# If the interpreter comes here, close the bowser tab
-scene.append_to_caption('<script>window.close();</script>')
+            self.graph1.xmax = self.graph1.xmin + self.graphs_xmax
+            self.graph2.xmax = self.graph2.xmin + self.graphs_xmax
 
- 
-
-
-
-
-
-
-
-
-
-
-
+            self.xmax_reached_num = self.xmax_reached_num + 1
+        else:
+            self.phi_sp_curve.plot(self.visualization_current_time, self.data_to_uav.phi_sp)
+            self.phi_pv_curve.plot(self.visualization_current_time, self.data_from_uav.phi)
+            self.phi_control_curve.plot(self.visualization_current_time, 
+                                        self.data_from_uav.proportional_term + self.data_from_uav.integral_term + self.data_from_uav.derivative_term)
+            self.phi_proportional_term_curve.plot(self.visualization_current_time, self.data_from_uav.proportional_term)
+            self.phi_integral_term_curve.plot(self.visualization_current_time, self.data_from_uav.integral_term)
+            self.phi_derivative_term_curve.plot(self.visualization_current_time, self.data_from_uav.derivative_term)
 
 
