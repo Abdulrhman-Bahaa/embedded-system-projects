@@ -51,7 +51,7 @@ class DroneSimulation:
 
         # Create the drone 3d model
         self.uav = uav
-        self.uav.pos = vec(0, self.uav_min_altitude, 0)
+        self.uav.pos = vec(0, self.uav_min_altitude + 1, 0)
 
         # Create input fields
         self.create_inputs()
@@ -70,7 +70,7 @@ class DroneSimulation:
         scene.background=color.cyan
         scene.autoscale = False
         scene.range = 1
-        scene.center = vec(0, self.uav_min_altitude, 0)
+        scene.center = vec(0, self.uav_min_altitude + 1, 0)
         scene.forward = vec(1,  -0.5, 0)
         scene.align = 'none'
 
@@ -169,8 +169,8 @@ class DroneSimulation:
         self.state_variables_wtext.text = self.wtext_text.format(*state_variables_wtext_values)
 
         # Animate the drone orientation
-        self.uav.yaw(1, 0, self.data_from_uav.psi)  
-        self.uav.pitch(1, 0, self.data_from_uav.theta)  
+        # self.uav.yaw(1, 0, self.data_from_uav.psi)  
+        # self.uav.pitch(1, 0, self.data_from_uav.theta)  
         self.uav.roll(1, 0, self.data_from_uav.phi)  
 
         # Propellers speed labels

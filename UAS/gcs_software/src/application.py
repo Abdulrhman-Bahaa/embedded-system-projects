@@ -27,7 +27,7 @@ def application_initialize():
     }
     BAUD_RATE = 57600
     SERIAL = True
-    JOYSTICK_INPUT = True
+    JOYSTICK_INPUT = False
     GRAPHS_XMAX = 30
     ser = None
 
