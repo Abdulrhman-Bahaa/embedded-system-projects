@@ -7,6 +7,7 @@ from dataclasses import dataclass
 # Global Variables ---------------------------------------------------
 running = True
 simulation = None
+joystick = None
 
 # Main function ------------------------------------------------------
 def main():
@@ -26,7 +27,7 @@ def application_initialize():
     }
     BAUD_RATE = 57600
     SERIAL = True
-    JOYSTICK_INPUT = False
+    JOYSTICK_INPUT = True
     GRAPHS_XMAX = 30
     ser = None
 
@@ -57,6 +58,7 @@ def keyInput(evt):
 
 def joystick_init():
     """Initialize pygame and detect joysticks"""
+    global joystick
     pygame.init()
     pygame.joystick.init()
 
