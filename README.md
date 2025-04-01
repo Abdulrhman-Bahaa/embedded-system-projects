@@ -1,6 +1,6 @@
 # Embedded Systems Applications  
 
-This repository contains various **embedded systems projects** that I am working on to improve my skills in **firmware development, control systems, and security applications**.  
+This repository contains various **embedded systems projects** that I am working on to improve my skills in **firmware development, control systems, etc**.  
 
 ## Projects Included  
 ### UAV Project  
