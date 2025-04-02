@@ -4,8 +4,7 @@ This repository contains various **embedded systems projects** that I am working
 
 ## Projects Included  
 ### UAV Project  
-A small drone project focused on:  
-- Implementing a **PID controller** for stability  
+=- Implementing a **PID controller** for stability  
 - Sensor fusion using an **IMU**  
 - PWM control for **motor speed adjustment**   
 
