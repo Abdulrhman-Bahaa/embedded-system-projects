@@ -1,11 +1,10 @@
 # Embedded Systems Applications  
 
-This repository contains various **embedded systems projects** that I am working on to improve my skills in **firmware development, control systems, and security applications**.  
+This repository contains various **embedded systems projects** that I am working on to improve my skills in **firmware development, control systems, etc**.  
 
 ## Projects Included  
 ### UAV Project  
-A small drone project focused on:  
-- Implementing a **PID controller** for stability  
+=- Implementing a **PID controller** for stability  
 - Sensor fusion using an **IMU**  
 - PWM control for **motor speed adjustment**   
 
