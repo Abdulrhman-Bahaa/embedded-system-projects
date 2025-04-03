@@ -1,13 +1,13 @@
  /**
  ******************************************************************************
- * @file       OLED_menu.h
+ * @file       oled_menu.h
  * @author     Abdulrhman Bahaa
  * @brief      This header file contains the declarations for led interfaces
  * @date       2024-5-2
  ******************************************************************************
 */
-#ifndef OLED_MENU_H
-#define	OLED_MENU_H
+#ifndef oled_MENU_H
+#define	oled_MENU_H
 
 /* Includes -----------------------------------------------------------------*/
 #include "std/mcal_std_types.h"
@@ -34,5 +34,5 @@ Std_ReturnType menu_item_logout_fun(uint8_t *keep_in_loop);
 Std_ReturnType menu_item_change_pass_fun(uint8_t *keep_in_loop);
 Std_ReturnType menu_item_game_fun(uint8_t *keep_in_loop);
 
-#endif /* OLED_MENU_H */
+#endif /* oled_MENU_H */
 

@@ -1,12 +1,12 @@
  /**
  ******************************************************************************
- * @file       OLED_menu.c
+ * @file       oled_menu.c
  * @author     Abdulrhman Bahaa
  * @brief      This header file contains the implementations for keypad interfaces
  * @date       2024-5-2
  ******************************************************************************
 */
-#include "OLED_menu.h"
+#include "oled_menu.h"
 
 const keypad_config_t keypad0 = {
     .columns = {

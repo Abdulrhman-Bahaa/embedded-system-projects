@@ -15,7 +15,7 @@
 #include "wifi_module/ecual_wifi_module.h"
 #include "oled_display/ecual_oled_display.h"
 #include "led/ecual_led.h"
-#include "OLED_menu.h"
+#include "oled_menu.h"
 
 /* Macro Declarations -------------------------------------------------------*/
 #define CHARACTER_WIDTH      8
