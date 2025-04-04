@@ -55,7 +55,7 @@ class UAVCommand:
     roll_controller: PidParameters = field(default_factory=PidParameters)
 
 class DroneSimulation:
-    def __init__(self, uav, data_from_uav, data_to_uav, graphs_xmax, ser=None, joystick_input=False):
+    def __init__(self, uav: Drone, data_from_uav: UAVData, data_to_uav: UAVCommand, graphs_xmax, ser=None, joystick_input=False):
         """Initialize the simulation with all VPython objects."""
         
         # Store external parameters
