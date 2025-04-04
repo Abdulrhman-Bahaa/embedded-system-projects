@@ -1,4 +1,5 @@
 # Imports ------------------------------------------------------------------
+from dataclasses import dataclass, field
 import serial, time
 from uav import *
 import pygame
@@ -15,6 +16,44 @@ def scale_value(x, old_min, old_max, new_min, new_max):
     return ((x - old_min) / (old_max - old_min)) * (new_max - new_min) + new_min
 
 # Classes --------------------------------------------------------------------
+@dataclass
+class UAVData:
+    psi: float = 0.0
+    theta: float = 0.0
+    phi: float = 0.0
+    proportional_term: float = 0.0
+    integral_term: float = 0.0
+    derivative_term: float = 0.0
+    pwm0: int = 0
+    pwm1: int = 0
+    pwm2: int = 0
+    pwm3: int = 0
+    debug0: float = 0.0
+    debug1: float = 0.0
+    debug2: float = 0.0
+
+@dataclass
+class PidParameters:
+    """ PID parameters for UAV control """
+    """ kp: proportional gain
+        ki: integral gain
+        kd: derivative gain
+        ka: ant-windup gain
+        sp: setpoint (desired value)
+    """
+    kp: float = 0.0
+    ki: float = 0.0
+    kd: float = 0.0
+    ka: float = 0.0
+    sp: float = 0.0
+
+@dataclass
+class UAVCommand:
+    motors_state: int = 0
+    yaw_controller: PidParameters = field(default_factory=PidParameters)
+    pitch_controller: PidParameters = field(default_factory=PidParameters)
+    roll_controller: PidParameters = field(default_factory=PidParameters)
+
 class DroneSimulation:
     def __init__(self, uav, data_from_uav, data_to_uav, graphs_xmax, ser=None, joystick_input=False):
         """Initialize the simulation with all VPython objects."""
