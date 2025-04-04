@@ -162,8 +162,8 @@ class DroneSimulation:
 
         # Text output
         state_variables_wtext_values = [self.data_from_uav.psi, self.data_from_uav.theta, 
-                                        self.data_from_uav.phi, self.data_to_uav.phi_sp, 
-                                        self.data_to_uav.phi_sp -  self.data_from_uav.phi, 
+                                        self.data_from_uav.phi, self.data_to_uav.roll_controller.sp, 
+                                        self.data_to_uav.roll_controller.sp -  self.data_from_uav.phi, 
                                         self.data_from_uav.debug0, self.data_from_uav.debug1, 
                                         self.data_from_uav.debug2]
         self.state_variables_wtext.text = self.wtext_text.format(*state_variables_wtext_values)
@@ -204,7 +204,7 @@ class DroneSimulation:
 
             self.xmax_reached_num = self.xmax_reached_num + 1
         else:
-            self.phi_sp_curve.plot(self.visualization_current_time, self.data_to_uav.phi_sp)
+            self.phi_sp_curve.plot(self.visualization_current_time, self.data_to_uav.roll_controller.sp)
             self.phi_pv_curve.plot(self.visualization_current_time, self.data_from_uav.phi)
             self.phi_control_curve.plot(self.visualization_current_time, 
                                         self.data_from_uav.proportional_term + self.data_from_uav.integral_term + self.data_from_uav.derivative_term)
