@@ -52,8 +52,10 @@ def application_initialize():
 
 def keyInput(evt):
     global running
-    if evt.key == 's':
+    if evt.key == 'esc':
         running = False
+    elif evt.key == 's':
+        simulation.send_data = True
 
 def joystick_init():
     """Initialize pygame and detect joysticks"""
