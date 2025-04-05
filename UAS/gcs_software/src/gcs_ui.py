@@ -1,4 +1,5 @@
 # Imports ------------------------------------------------------------------
+from dataclasses import dataclass, field, is_dataclass, fields
 import serial, time
 from uav import *
 import pygame
@@ -14,9 +15,59 @@ old_range = (-1, 1)
 def scale_value(x, old_min, old_max, new_min, new_max):
     return ((x - old_min) / (old_max - old_min)) * (new_max - new_min) + new_min
 
+def iterate_dataclass(obj, data):
+    for f in fields(obj):
+        value = getattr(obj, f.name)
+        if is_dataclass(value):
+            iterate_dataclass(value, data)
+        else:
+            data.append(value)
+    return data
+
+def do_nothing(evt):
+    pass
+
 # Classes --------------------------------------------------------------------
+@dataclass
+class UAVData:
+    psi: float = 0.0
+    theta: float = 0.0
+    phi: float = 0.0
+    proportional_term: float = 0.0
+    integral_term: float = 0.0
+    derivative_term: float = 0.0
+    pwm0: int = 0
+    pwm1: int = 0
+    pwm2: int = 0
+    pwm3: int = 0
+    debug0: float = 0.0
+    debug1: float = 0.0
+    debug2: float = 0.0
+
+@dataclass
+class PidParameters:
+    """ PID parameters for UAV control """
+    """ kp: proportional gain
+        ki: integral gain
+        kd: derivative gain
+        ka: ant-windup gain
+        sp: setpoint (desired value)
+    """
+    kp: float = 0.0
+    ki: float = 0.0
+    kd: float = 0.0
+    ka: float = 0.0
+    sp: float = 0.0
+
+@dataclass
+class UAVCommand:
+    motors_state: int = 0
+    yaw_controller: PidParameters = field(default_factory=PidParameters)
+    pitch_controller: PidParameters = field(default_factory=PidParameters)
+    roll_controller: PidParameters = field(default_factory=PidParameters)
+
 class DroneSimulation:
-    def __init__(self, uav, data_from_uav, data_to_uav, graphs_xmax, ser=None, joystick_input=False):
+    def __init__(self, uav: Drone, data_from_uav: UAVData, data_to_uav: UAVCommand, graphs_xmax, ser=None, joystick_input=False):
         """Initialize the simulation with all VPython objects."""
         
         # Store external parameters
@@ -32,6 +83,9 @@ class DroneSimulation:
         self.scale_time = 0
         self.xmax_reached_num = 0
         self.joystick_input = joystick_input
+        self.send_data = False
+        self.winput_values = []
+        self.controllers_menu = None
 
         if ser is None:
             print("No serial provided")
@@ -76,11 +130,20 @@ class DroneSimulation:
 
     def create_inputs(self):
         """Create user input fields for control variables."""
+        controllers_choice_list = []
         scene.append_to_caption('\n\t')
         for key, value in vars(self.data_to_uav).items():
-            scene.append_to_caption(' ')
-            wtext(text=key + ' = ')
-            winput(bind=self.winput_data_handler, type='numeric', id=key)
+            if not is_dataclass(value):
+                scene.append_to_caption(key + ' = ')
+                self.winput_values.append(winput(bind=do_nothing, type='numeric', id=key))
+            else:
+                controllers_choice_list.append(key)
+
+        for key, value in vars(self.data_to_uav.pitch_controller).items():
+            scene.append_to_caption(key + ' = ')
+            self.winput_values.append(winput(bind=do_nothing, type='numeric', id=key))
+
+        self.controllers_menu = menu(bind=do_nothing, choices=controllers_choice_list, index=0)
 
         scene.append_to_caption('\t')
 
@@ -98,12 +161,12 @@ class DroneSimulation:
                             xmin=0, xmax=self.graphs_xmax, height=440, width=800, scroll=False)
 
         # Curves
-        self.phi_pv_curve = gcurve(color=color.green, label='φ(t)', graph=self.graph1)
-        self.phi_sp_curve = gcurve(color=color.black, label='sp', graph=self.graph1)
-        self.phi_control_curve = gcurve(color=color.blue, label='u(t)', graph=self.graph2)
-        self.phi_proportional_term_curve = gcurve(color=color.cyan, label='P', graph=self.graph2)
-        self.phi_integral_term_curve = gcurve(color=color.magenta, label='I', graph=self.graph2)
-        self.phi_derivative_term_curve = gcurve(color=color.purple, label='D', graph=self.graph2)
+        self.pv_curve = gcurve(color=color.green, label='φ(t)', graph=self.graph1)
+        self.sp_curve = gcurve(color=color.black, label='sp', graph=self.graph1)
+        self.control_curve = gcurve(color=color.blue, label='u(t)', graph=self.graph2)
+        self.proportional_term_curve = gcurve(color=color.cyan, label='P', graph=self.graph2)
+        self.integral_term_curve = gcurve(color=color.magenta, label='I', graph=self.graph2)
+        self.derivative_term_curve = gcurve(color=color.purple, label='D', graph=self.graph2)
 
     def receive_from_uav(self):
         if self.ser.in_waiting > 0:  # Check if data is available
@@ -122,19 +185,23 @@ class DroneSimulation:
                 print(e)
 
     def send_to_uav(self):
-        data = list(vars(self.data_to_uav).values())
+        data = []
+        data = iterate_dataclass(self.data_to_uav, data)
         data = ','.join(map(str, data))
         data += '\n'
         self.ser.write(data.encode())
 
-    def winput_data_handler(self, evt):
+    def vpython_user_input_handler(self):
         """Function to send user input values to the UAV."""
-        input_id = evt.id
-        input_value = evt.number
+        setattr(self.data_to_uav, 'motors_state',  0 if self.winput_values[0].number is None else self.winput_values[0].number)
 
-        setattr(self.data_to_uav, input_id, float(input_value))
-
-        self.send_to_uav()
+        controller_selected = getattr(self.data_to_uav, str(self.controllers_menu.selected))
+        
+        controller_selected.kp = 0 if self.winput_values[1].number is None else self.winput_values[1].number
+        controller_selected.ki = 0 if self.winput_values[2].number is None else self.winput_values[2].number
+        controller_selected.kd = 0 if self.winput_values[3].number is None else self.winput_values[3].number
+        controller_selected.ka = 0 if self.winput_values[4].number is None else self.winput_values[4].number
+        controller_selected.sp = 0 if self.winput_values[5].number is None else self.winput_values[5].number
     
     def joystick_data_handler(self):
         for event in pygame.event.get():
@@ -146,13 +213,17 @@ class DroneSimulation:
 
     def gcs_interface(self):
         """ Responsible of getting data from uav and send commands to it"""
+        if self.send_data:
+            # Send data to uav
+            self.vpython_user_input_handler()
+            self.send_to_uav()
+            self.send_data = False
         # Get data from uav
         if self.ser:
             self.receive_from_uav()
         # Send data to uav
         if self.joystick_input:
             self.joystick_data_handler()
-        # winput data will be handled by events handling in vpython (calling 'winput_data_handler' function)"""
 
     def data_visualize(self):
         if self.first_visualization:
@@ -162,8 +233,8 @@ class DroneSimulation:
 
         # Text output
         state_variables_wtext_values = [self.data_from_uav.psi, self.data_from_uav.theta, 
-                                        self.data_from_uav.phi, self.data_to_uav.phi_sp, 
-                                        self.data_to_uav.phi_sp -  self.data_from_uav.phi, 
+                                        self.data_from_uav.phi, self.data_to_uav.roll_controller.sp, 
+                                        self.data_to_uav.roll_controller.sp -  self.data_from_uav.phi, 
                                         self.data_from_uav.debug0, self.data_from_uav.debug1, 
                                         self.data_from_uav.debug2]
         self.state_variables_wtext.text = self.wtext_text.format(*state_variables_wtext_values)
@@ -183,18 +254,18 @@ class DroneSimulation:
         # Check if scaling required
         if (round(self.visualization_current_time % self.graphs_xmax, 1) == 0) and ((self.visualization_current_time - self.scale_time) > 1) :
             self.scale_time = self.visualization_current_time
-            self.phi_sp_curve.delete()
-            self.phi_pv_curve.delete()
-            self.phi_control_curve.delete()
-            self.phi_proportional_term_curve.delete()
-            self.phi_integral_term_curve.delete()
-            self.phi_derivative_term_curve.delete()
-            self.phi_sp_curve.data = []
-            self.phi_pv_curve.data = []
-            self.phi_control_curve.data = []
-            self.phi_proportional_term_curve.data = []
-            self.phi_integral_term_curve.data = []
-            self.phi_derivative_term_curve.data = []
+            self.sp_curve.delete()
+            self.pv_curve.delete()
+            self.control_curve.delete()
+            self.proportional_term_curve.delete()
+            self.integral_term_curve.delete()
+            self.derivative_term_curve.delete()
+            self.sp_curve.data = []
+            self.pv_curve.data = []
+            self.control_curve.data = []
+            self.proportional_term_curve.data = []
+            self.integral_term_curve.data = []
+            self.derivative_term_curve.data = []
 
             self.graph1.xmin = self.graphs_xmax + (self.graphs_xmax * self.xmax_reached_num)
             self.graph2.xmin = self.graphs_xmax + (self.graphs_xmax * self.xmax_reached_num)
@@ -204,12 +275,14 @@ class DroneSimulation:
 
             self.xmax_reached_num = self.xmax_reached_num + 1
         else:
-            self.phi_sp_curve.plot(self.visualization_current_time, self.data_to_uav.phi_sp)
-            self.phi_pv_curve.plot(self.visualization_current_time, self.data_from_uav.phi)
-            self.phi_control_curve.plot(self.visualization_current_time, 
+            sp = getattr(self.data_to_uav, str(self.controllers_menu.selected)).sp
+            self.sp_curve.plot(self.visualization_current_time, sp)
+
+            self.pv_curve.plot(self.visualization_current_time, self.data_from_uav.phi)
+            self.control_curve.plot(self.visualization_current_time, 
                                         self.data_from_uav.proportional_term + self.data_from_uav.integral_term + self.data_from_uav.derivative_term)
-            self.phi_proportional_term_curve.plot(self.visualization_current_time, self.data_from_uav.proportional_term)
-            self.phi_integral_term_curve.plot(self.visualization_current_time, self.data_from_uav.integral_term)
-            self.phi_derivative_term_curve.plot(self.visualization_current_time, self.data_from_uav.derivative_term)
+            self.proportional_term_curve.plot(self.visualization_current_time, self.data_from_uav.proportional_term)
+            self.integral_term_curve.plot(self.visualization_current_time, self.data_from_uav.integral_term)
+            self.derivative_term_curve.plot(self.visualization_current_time, self.data_from_uav.derivative_term)
 
 

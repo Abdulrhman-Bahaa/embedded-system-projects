@@ -2,7 +2,6 @@
  
 # Imports ------------------------------------------------------------
 from gcs_ui import *
-from dataclasses import dataclass, field
 
 # Global Variables ---------------------------------------------------
 running = True
@@ -53,8 +52,10 @@ def application_initialize():
 
 def keyInput(evt):
     global running
-    if evt.key == 's':
+    if evt.key == 'esc':
         running = False
+    elif evt.key == 's':
+        simulation.send_data = True
 
 def joystick_init():
     """Initialize pygame and detect joysticks"""
@@ -72,43 +73,6 @@ def joystick_init():
     print(f"Connected to: {joystick.get_name()}")
 
 # Classes ----------------------------------------------------------
-@dataclass
-class UAVData:
-    psi: float = 0.0
-    theta: float = 0.0
-    phi: float = 0.0
-    proportional_term: float = 0.0
-    integral_term: float = 0.0
-    derivative_term: float = 0.0
-    pwm0: int = 0
-    pwm1: int = 0
-    pwm2: int = 0
-    pwm3: int = 0
-    debug0: float = 0.0
-    debug1: float = 0.0
-    debug2: float = 0.0
-
-@dataclass
-class PidParameters:
-    """ PID parameters for UAV control """
-    """ kp: proportional gain
-        ki: integral gain
-        kd: derivative gain
-        ka: ant-windup gain
-        sp: setpoint (desired value)
-    """
-    kp: float = 0.0
-    ki: float = 0.0
-    kd: float = 0.0
-    ka: float = 0.0
-    sp: float = 0.0
-
-@dataclass
-class UAVCommand:
-    motors_state: int = 0
-    yaw_controller: PidParameters = field(default_factory=PidParameters)
-    pitch_controller: PidParameters = field(default_factory=PidParameters)
-    roll_controller: PidParameters = field(default_factory=PidParameters)
 
 # Main calling -------------------------------------------------------
 if __name__ == "__main__":
