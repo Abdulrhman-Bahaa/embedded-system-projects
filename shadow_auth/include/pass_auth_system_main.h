@@ -10,8 +10,8 @@
 #define	PASS_AUTH_SYSTEM_CONFIG_H
 
 /* Includes -----------------------------------------------------------------*/
-#include "std/mcal_std_types.h"
-#include <string.h>
+#include <atmega328p/std_types.h>
+// #include <string.h>
 
 /* Macro Declarations -------------------------------------------------------*/
 #define MAX_PASS_DIGITS 20
