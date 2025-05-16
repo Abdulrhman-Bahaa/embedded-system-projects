@@ -10,8 +10,6 @@
 #include "pass_auth_system_config.h"
 
 /* Global Variables ---------------------------------------------------------*/
-
-
 static const usart_config_t usart0 = {
     .mode = USART_ASYNCHRONOUS_MODE,
     .ubrr_value = 16,
