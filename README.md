@@ -11,7 +11,7 @@ This repository contains various **embedded systems projects** that I am working
 - UI interface for **monitoring and command (GCS)**
 
 ### [OLED Based Password Authenticator](oled_based_password_authenticator/)
-- An example of implementing the interfaces found in [ShadowAuth](shadow_auth/)
+- An example of implementing the interfaces found in [ShadowAuth](shadow_auth/) using [oled display drivers](https://github.com/Abdulrhman-Bahaa/device-drivers/tree/main/ecual/oled_display) found on my [device drivers](https://github.com/Abdulrhman-Bahaa/device-drivers) repo
 - Purpose: A secure, embedded authentication system that allows users to implement their own logic for password handling, access control, and system management.
 - User Interaction: The user interacts with the system via keypad input and responds to authentication prompts displayed on an OLED screen.
 - Key Features:
