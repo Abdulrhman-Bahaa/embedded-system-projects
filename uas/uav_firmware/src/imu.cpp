@@ -1,7 +1,20 @@
-#include "imu.h"
-MPU6050* mpu;
+/**
+ ******************************************************************************
+ * @file       imu.cpp
+ * @author     Abdulrhman Bahaa
+ * @brief      This source file contains implementations for the imu functions
+ * @date       2025-03-14
+ ******************************************************************************
+*/
+#include "imu.hpp"
 
+/* Functions Declarations ---------------------------------------------------*/
+void mpu6050_with_dmp_init();
+void mpu6050_without_dmp_init(MPU6050* mpu);
+void mpu6050_without_dmp_get_angles(MPU6050* mpu, float* euler_angles);
+void mpu6050_without_dmp_get_angles(float euler_angles[3]);
 
+/* Functions Implementations -------------------------------------------------*/
 #if (DMP == 1)
   void mpu6050_with_dmp_init(MPU6050 *mpu) {
     uint8_t devStatus;      // Return status after each device operation (0 = success, !0 = error)
@@ -46,37 +59,50 @@ MPU6050* mpu;
           mpu->dmpGetGravity(&gravity, &q);
           mpu->dmpGetYawPitchRoll(euler_angles, &q, &gravity);
   }
+
+void Imu::init() {
+  mpu6050_with_dmp_init(this->mpu)
+}
+
+void Imu::update() {
+  mpu6050_with_dmp_get_angles(this->euler_angles)
+}
+
 #else
-void mpu6050_without_dmp_init() {
-  static MPU6050 mpu6050(Wire);
-  mpu = &mpu6050;
+
+/**
+ * @brief Constructor for the Imu class
+ */
+Imu::Imu() {
+  mpu = new MPU6050(Wire);
+}
+
+/**
+ * @brief Initializes the MPU6050 without DMP
+ * @details This function initializes the MPU6050 sensor without using the DMP (Digital Motion Processor).
+ *          It sets up the I2C communication and calculates the gyro offsets.
+ */
+void mpu6050_without_dmp_init(MPU6050* mpu) {
   Wire.begin();
   mpu->begin();
   mpu->calcGyroOffsets(true);
 }
 
-void mpu6050_without_dmp_get_angles(float* euler_angles) {
+
+void mpu6050_without_dmp_get_angles(MPU6050* mpu, float* euler_angles) {
   mpu->update();
   euler_angles[0] = mpu->getAngleZ();
   euler_angles[1] = mpu->getAngleX();
   euler_angles[2] = mpu->getAngleY();
 }
+
+void Imu::init() {
+  mpu6050_without_dmp_init(mpu);
+}
+
+void Imu::update() {
+  mpu6050_without_dmp_get_angles(mpu, euler_angles);
+}
+
 #endif
-
-
-void imu_init() {
-  #if (DMP == 1)
-    mpu6050_with_dmp_init((MPU6050 *)imu)
-  #else
-    mpu6050_without_dmp_init();
-  #endif
-}
-
-void imu_get_angles(float euler_angles[3]) {
-  #if (DMP == 1)
-    mpu6050_with_dmp_get_angles(euler_angles)
-  #else
-    mpu6050_without_dmp_get_angles(euler_angles);
-  #endif
-}
 

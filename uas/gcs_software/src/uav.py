@@ -1,3 +1,5 @@
+import os
+os.environ["BROWSER"] = "chrome"
 from vpython import *
 import numpy as np
 

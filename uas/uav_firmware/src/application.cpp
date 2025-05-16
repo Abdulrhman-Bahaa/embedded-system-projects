@@ -13,59 +13,98 @@
  *            /  |  \
  *           3   v   2
  *
- * - Propeller Layout:
- *   - **1 & 4** → Front propellers.
- *   - **2 & 3** → Rear propellers.
- *   - ϕ > 0 → Right tilt (clockwise roll).
- *   - ϕ < 0 → Left tilt (counterclockwise roll). *
- * @date       2025-03-21
+ * - Euler Angles in NED Frame (Right-Handed System)
+ *   | Angle              | Axis      | Positive Rotation              | Negative Rotation                    |
+ *   | ------------------ | --------- | ------------------------------ | ------------------------------------ |
+ *   | Roll (φ -> phi)    | X (North) | Right wing down (right roll)   | Left wing down (left roll)           |
+ *   | Pitch (θ -> theta) | Y (East)  | Nose up (climb)                | Nose down (dive)                     |
+ *   | Yaw (ψ -> psi)     | Z (Down)  | Clockwise turn (to the right)  | Counter-clockwise turn (to the left) |
+ * 
+ * @date    2025-03-21
+ * @author  Abdulrhman Bahaa
+ * @see     https://github.com/Abdulrhman-Bahaa/embedded-system-projects/tree/main/uas
  ******************************************************************************
  */
-#include "application.h"
+#include "application.hpp"
 
 /* Variables Definitions ----------------------------------------------------*/ 
-// Create roll controller using PID 
-PidController rollController(ROLL_CONTROLLER_KP, ROLL_CONTROLLER_KI, ROLL_CONTROLLER_KD, ROLL_CONTROLLER_KA,
+/* Create Yaw controller using PID */ 
+PidController yaw_controller(YAW_CONTROLLER_KP, YAW_CONTROLLER_KI, YAW_CONTROLLER_KD, YAW_CONTROLLER_KA,
+  YAW_CONTROLLER_SP, YAW_CONTROLLER_MIN_YAW_ACTUATOR_COMMAND, 
+  YAW_CONTROLLER_MAX_YAW_ACTUATOR_COMMAND);
+
+/* Create Pitch controller using PID */ 
+PidController pitch_controller(PITCH_CONTROLLER_KP, PITCH_CONTROLLER_KI, PITCH_CONTROLLER_KD, PITCH_CONTROLLER_KA,
+  PITCH_CONTROLLER_SP, PITCH_CONTROLLER_MIN_PITCH_ACTUATOR_COMMAND, 
+  PITCH_CONTROLLER_MAX_PITCH_ACTUATOR_COMMAND);
+
+/* Create Roll controller using PID */ 
+PidController roll_controller(ROLL_CONTROLLER_KP, ROLL_CONTROLLER_KI, ROLL_CONTROLLER_KD, ROLL_CONTROLLER_KA,
   ROLL_CONTROLLER_SP, ROLL_CONTROLLER_MIN_ROLL_ACTUATOR_COMMAND, 
   ROLL_CONTROLLER_MAX_ROLL_ACTUATOR_COMMAND);
 
-// Data to be send to gcs (For monitoring)
-float euler_angles[3] = {0};
-uint8_t motors_pwm[4] = {0};
-// Data received from gcs (For commands like tilting)
-float data_from_gcs[DATA_FROM_GCS_ARRAY_SIZE] = {0};
-// roll_actuator_command value will be changed by the roll controller
-// altitude_actuator_command value will be fixed (Since no altitude controller is implemented)
-float roll_actuator_command = 0, altitude_actuator_command = 128;
+/* Create Motors objects */
+Motor motors[4] = {
+  Motor(MOTOR_0_PIN),
+  Motor(MOTOR_1_PIN),
+  Motor(MOTOR_2_PIN),
+  Motor(MOTOR_3_PIN)
+};
+
+/* Create Imu object */
+Imu imu;
+
+/* Create GCS object */
+Gcs gcs(&imu, motors, &yaw_controller, &pitch_controller, &roll_controller);
+
+/* altitude_actuator_command value will be fixed (Since no altitude controller is implemented) */
+uint8_t yaw_actuator_command, pitch_actuator_command, roll_actuator_command, altitude_actuator_command = 128;
 
 /* Main Function ------------------------------------------------------------*/
 int main(void) {
   Std_ReturnType ret = E_OK;
-  ret = application_initialize();
+  ret |= application_initialize();
+
+  if (E_OK != ret) {
+    /* Error in initialization */
+    while(1);
+  }
+
+  /* Main loop */
   while(1) {
-    // The function which is responsible for sending and receiveing data from the gcs
-    gcs_interface(&rollController, euler_angles, motors_pwm, data_from_gcs);
 
-    // Get the euler angles
-    imu_get_angles(euler_angles);
-    
-    // Get the control command from the controller
-    rollController.control(euler_angles[2]);
-    roll_actuator_command = rollController.actual_pid_output;
+    /* Get the euler angles */
+    imu.update();
 
-    motors_pwm[0] = altitude_actuator_command - roll_actuator_command;
-    motors_pwm[1] = altitude_actuator_command - roll_actuator_command;
-    motors_pwm[2] = altitude_actuator_command + roll_actuator_command;
-    motors_pwm[3] = altitude_actuator_command + roll_actuator_command;
+    /* Get the data from the GCS */
+    // gcs.receive();
 
-    // Apply action on the plant when data_from_gcs[0] is one (Changed from gcs)
-    if (data_from_gcs[0] == 1) {
-      analogWrite(MOTOR_0_PIN, motors_pwm[0]);
-      analogWrite(MOTOR_2_PIN, motors_pwm[2]);
+    /* Send the data to the GCS */
+    gcs.send();
+
+    /* Get the control command from the controllers */ 
+    yaw_controller.control(imu.euler_angles[0]);
+    pitch_controller.control(imu.euler_angles[1]);
+    roll_controller.control(imu.euler_angles[2]);
+
+    yaw_actuator_command = yaw_controller.actual_pid_output;
+    pitch_actuator_command = pitch_controller.actual_pid_output;
+    roll_actuator_command = roll_controller.actual_pid_output;
+
+    /* Apply action on the plant when motors_state is one (Changed from gcs) */
+    if (1 == gcs.motors_state) {
+       /* Motor mixing formula */
+      motors[0].set_pwm(altitude_actuator_command - pitch_actuator_command - yaw_actuator_command - roll_actuator_command);
+      motors[1].set_pwm(altitude_actuator_command + pitch_actuator_command - yaw_actuator_command - roll_actuator_command);
+      motors[2].set_pwm(altitude_actuator_command + pitch_actuator_command + yaw_actuator_command + roll_actuator_command);
+      motors[3].set_pwm(altitude_actuator_command - pitch_actuator_command + yaw_actuator_command + roll_actuator_command);
     }
     else {
-      analogWrite(MOTOR_0_PIN, 0);
-      analogWrite(MOTOR_2_PIN, 0);
+      /* Stop the motors when motors_state is zero (Changed from gcs) */
+      motors[0].set_pwm(0);
+      motors[1].set_pwm(0);
+      motors[2].set_pwm(0);
+      motors[3].set_pwm(0);
     }
   }
   return 0;
@@ -79,18 +118,20 @@ int main(void) {
 */
 Std_ReturnType application_initialize(void) {
   Std_ReturnType ret = E_OK;
-  // Initialize some core peripherals like timers
+  /* Initialize some core peripherals like timers */
   init();
 
-  // Initialize serial communication (USART/57600 baudrate) for GCS
-  gcs_init();
+  /* Initialize serial communication (USART/57600 baudrate) for GCS */
+  gcs.init();
 
-  // Initialize IMU (MPU6050 is used without DMP)
-  imu_init();
+  /* Initialize IMU (MPU6050 is used without DMP) */
+  imu.init();
 
-  // Initialize PWM for propellers (Each two motors has the same PWM control, motor0 with motor1 and motor2 with motor3)
-  pinMode(MOTOR_0_PIN, OUTPUT);
-  pinMode(MOTOR_2_PIN, OUTPUT);
+  /* Initialize motors */
+  motors[0].init();
+  motors[1].init();
+  motors[2].init();
+  motors[3].init();
   
   return ret;
 }

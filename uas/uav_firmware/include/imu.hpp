@@ -1,13 +1,13 @@
 /**
  ******************************************************************************
- * @file       imu.h
+ * @file       imu.hpp
  * @author     Abdulrhman Bahaa
  * @brief      This header file contains declarations for the imu functions
  * @date       2025-03-17
  ******************************************************************************
 */
-#ifndef IMU_H
-#define	IMU_H
+#ifndef IMU_HPP
+#define	IMU_HPP
 
 /* Macro Declarations -------------------------------------------------------*/
 #define DMP 0
@@ -20,18 +20,16 @@
   #include <MPU6050_tockn.h>
 #endif
 
-/* Macro Functions Declarations ---------------------------------------------*/
-
 /* Data Type Declarations ---------------------------------------------------*/
+class Imu {
+    MPU6050* mpu;
+  public:
+    float euler_angles[3];
 
-/* Variables Declarations ---------------------------------------------------*/
+    Imu();
 
-/* Functions Declarations ---------------------------------------------------*/
-void mpu6050_with_dmp_init();
-void mpu6050_without_dmp_init();
-void mpu6050_with_dmp_get_angles(float euler_angles[3]);
-void mpu6050_without_dmp_get_angles(float euler_angles[3]);
-void imu_init();
-void imu_get_angles(float euler_angles[3]);
+    void init();
+    void update();
+};
 
-#endif	/* IMU_H */
+#endif	/* IMU_HPP */

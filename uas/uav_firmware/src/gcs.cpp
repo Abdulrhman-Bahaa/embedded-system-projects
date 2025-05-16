@@ -6,150 +6,113 @@
  * @date       2025-03-14
  ******************************************************************************
 */
-#include "gcs.h"
-
-/* Variables Definitions ----------------------------------------------------*/
+#include "gcs.hpp"
 
 /* Functions Implementations -------------------------------------------------*/
-void gcs_init() {
+/**
+ * @brief Constructor for the Gcs class
+ * @param imu Pointer to the Imu object
+ * @param motors Pointer to the Motor object
+ * @param yaw_controller Pointer to the PidController object for yaw
+ * @param pitch_controller Pointer to the PidController object for pitch
+ * @param roll_controller Pointer to the PidController object for roll
+ */
+Gcs::Gcs(Imu* imu, Motor* motors, PidController* yaw_controller, PidController* pitch_controller, PidController* roll_controller) {
+    this->imu = imu;
+    this->motors = motors;
+    this->yaw_controller = yaw_controller;
+    this->pitch_controller = pitch_controller;
+    this->roll_controller = roll_controller;
+    this->motors_state = 0;
+}
+
+/**
+ * @brief This class method initializes the GCS by setting up the serial communication.
+ */
+void Gcs::init() {
     Serial.begin(57600);
 }
 
-PidController::PidController(float kp, float ki, float kd, float ka, float sp,
-    float min_roll_actuator_command, float max_roll_actuator_command) {
-    (this->kp) = kp;
-    (this->ki) = ki;
-    (this->kd) = kd;
-    (this->ka) = ka;
-    (this->sp) = sp;
-
-    (this->min_roll_actuator_command) = min_roll_actuator_command;
-    (this->max_roll_actuator_command) = max_roll_actuator_command;
-
-    raw_pid_output = 0;
-    actual_pid_output = 0;
-
-    accumulated_error = 0;
-    saturated = 0;
-}
-
-void PidController::control(float pv) {
-    current_time = millis();
-    dt = (current_time - prev_time) / 1000.0;  // Convert to seconds
-    error = sp - pv;
-
-    if (ki > 0) {
-        #if (BACK_CALCULATION_ANTI_WINDUP == 1)
-            accumulated_error += (error * dt);
-        #else
-            if ((!saturated) || ((actual_pid_output * error) < 0)) {
-                accumulated_error += (error * dt);
-            }
-        #endif
+/**
+ * @brief This class handles the communication with the ground control station (GCS).
+ * @details The GCS class is responsible for sending and receiving data between the drone and the ground control station.
+ *          Data shape: psi, theta, phi, motor_0_pwm, motor_1_pwm, motor_2_pwm, motor_3_pwm,
+ *          yaw_controller_proportional_term, yaw_controller_integral_term, yaw_controller_derivative_term,
+ *          pitch_controller_proportional_term, pitch_controller_integral_term, pitch_controller_derivative_term,
+ *          roll_controller_proportional_term, roll_controller_integral_term, roll_controller_derivative_term,
+ *          dummy_1, dummy_2, dummy_3
+ * @note The data is sent in a comma-separated format.
+ */
+void Gcs::send() {
+    for (uint8_t i = 0; i < 3; i++) {
+        Serial.print(imu->euler_angles[i]);
+        Serial.print(",");
     }
-    else {
-        accumulated_error = 0;
+    for (uint8_t i = 0; i < 4; i++) {
+        Serial.print(motors[i].pwm_value);
+        Serial.print(",");
     }
-
-    proportional_term = (kp * error);
-    derivative_term = (kd * ((error - prev_error) / dt));
-    integral_term = (ki * accumulated_error);
-
-    raw_pid_output =  proportional_term + integral_term  + derivative_term;
-    actual_pid_output =  constrain(raw_pid_output, min_roll_actuator_command, max_roll_actuator_command);
-
-
-    #if (BACK_CALCULATION_ANTI_WINDUP == 1)
-        accumulated_error -= (ka * (raw_pid_output - actual_pid_output));
-    #else
-        if ((actual_pid_output == max_roll_actuator_command) || (actual_pid_output == min_roll_actuator_command)) {
-            saturated = 1;
-        }
-        else {
-            saturated = 0;
-        }
-    #endif
-
-    // Time update and error 
-    prev_time = current_time;
-    prev_error = error;
-    current_time = millis();
+    Serial.print(yaw_controller->proportional_term);
+    Serial.print(",");
+    Serial.print(yaw_controller->integral_term);
+    Serial.print(",");
+    Serial.print(yaw_controller->derivative_term);
+    Serial.print(",");
+    Serial.print(pitch_controller->proportional_term);
+    Serial.print(",");
+    Serial.print(pitch_controller->integral_term);
+    Serial.print(",");
+    Serial.print(pitch_controller->derivative_term);
+    Serial.print(",");
+    Serial.print(roll_controller->proportional_term);
+    Serial.print(",");
+    Serial.print(roll_controller->integral_term);
+    Serial.print(",");
+    Serial.print(roll_controller->derivative_term);
+    Serial.print(",");
+    Serial.print(0);
+    Serial.print(",");
+    Serial.print(0);
+    Serial.print(",");
+    Serial.println(0);
 }
 
-void send_to_gcs(PidController *controller, float euler_angles[3], uint8_t motors_pwm[4]) {
-    // Send drone state variables, pid output and pwm signal for visualization
+/**
+ * @brief This class method handles the reception of data from the ground control station (GCS).
+ * @details The GCS class method is responsible for receiving data from the ground control station and updating the
+ *          drone's state accordingly.
+ *          Data shape: motors_state, yaw_controller_kp, yaw_controller_ki, yaw_controller_kd,    
+ *          pitch_controller_kp, pitch_controller_ki, pitch_controller_kd,
+ *          roll_controller_kp, roll_controller_ki, roll_controller_kd
+ * @note The data is received in a comma-separated format.
+ */
+void Gcs::receive() {
+    if (Serial.available() > 0) {
+        String received_buffer = Serial.readStringUntil('\n');  //read received data
 
-    #if (DATA_OVER_SERIAL_IS_READABLE == 1)
-        for(uint8_t i = 0; i < 3; i++) {
-            Serial.print(euler_angles[i]);
-            Serial.print(",");
-        }
-
-        Serial.print(controller->proportional_term);
-        Serial.print(",");
-        Serial.print(controller->integral_term);
-        Serial.print(",");
-        Serial.print(controller->derivative_term);
-        Serial.print(",");
-
-        for(uint8_t i = 0; i < 4; i++) {
-            Serial.print(motors_pwm[i]);
-            Serial.print(",");
-        }
-
-        // Replace zeros for debug
-        Serial.print(0);
-        Serial.print(",");
-        Serial.print(0);
-        Serial.print(",");
-        Serial.println(0);
-
-    #else
-        byte buffer[12];  // Create a byte buffer
-
-        memcpy(buffer, euler_angles, 12);  // Copy float data to byte buffer
-        Serial.write(255);  // Send start marker (sync byte)
-
-        Serial.write(buffer, 12);  // Send float data as bytes
-
-        // memcpy(buffer, &(controller->proportional_term), 4);
-        // Serial.write(buffer, 4);  // Send float data as bytes
-
-        // memcpy(buffer, &(controller->integral_term), 4);
-        // Serial.write(buffer, 4);  // Send float data as bytes
-
-        // memcpy(buffer, &(controller->derivative_term), 4);
-        // Serial.write(buffer, 4);  // Send float data as bytes
-
-        // memcpy(buffer, motors_pwm, 16);  // Copy float data to byte buffer
-        // Serial.write(buffer, 16);  // Send float data as bytes
-    #endif
-}
-  
-void receive_from_gcs(PidController *controller, float data_from_gcs[DATA_FROM_GCS_ARRAY_SIZE]) {
-    if(Serial.available() > 0) {   
-        String received_buffer = Serial.readStringUntil('\n');  //read received data  
-  
         char charArray[received_buffer.length() + 1];   // Create a char array
         received_buffer.toCharArray(charArray, sizeof(charArray)); // Convert String to char array
-    
-        char *token = strtok(charArray, ",");  // Get first token
-        data_from_gcs[0] = atof(token);
-  
-        for (uint8_t i = 1; i < DATA_FROM_GCS_ARRAY_SIZE; i++) {
-            data_from_gcs[i] = atof(strtok(NULL, ","));
-        }
 
-        controller->kp = data_from_gcs[1];
-        controller->ki = data_from_gcs[2];
-        controller->kd = data_from_gcs[3];
-        controller->ka = data_from_gcs[4];
-        controller->sp = data_from_gcs[5];
+        char *token = strtok(charArray, ",");  // Get first token
+        motors_state = atof(token);
+
+        yaw_controller->kp = atof(strtok(NULL, ","));
+        yaw_controller->ki = atof(strtok(NULL, ","));
+        yaw_controller->kd = atof(strtok(NULL, ","));
+        yaw_controller->ka = atof(strtok(NULL, ","));
+        yaw_controller->sp = atof(strtok(NULL, ","));
+
+        pitch_controller->kp = atof(strtok(NULL, ","));
+        pitch_controller->ki = atof(strtok(NULL, ","));
+        pitch_controller->kd = atof(strtok(NULL, ","));
+        pitch_controller->ka = atof(strtok(NULL, ","));
+        pitch_controller->sp = atof(strtok(NULL, ","));
+
+        roll_controller->kp = atof(strtok(NULL, ","));
+        roll_controller->ki = atof(strtok(NULL, ","));
+        roll_controller->kd = atof(strtok(NULL, ","));
+        roll_controller->ka = atof(strtok(NULL, ","));
+        roll_controller->sp = atof(strtok(NULL, ","));
     }
 }
-
-void gcs_interface(PidController *controller, float euler_angles[3], uint8_t motors_pwm[4], float data_from_gcs[DATA_FROM_GCS_ARRAY_SIZE]) {
-    send_to_gcs(controller, euler_angles, motors_pwm);
-    receive_from_gcs(controller, data_from_gcs);
-}
-
+ 
