@@ -190,6 +190,7 @@ class DroneSimulation:
         data = ','.join(map(str, data))
         data += '\n'
         self.ser.write(data.encode())
+        # print(data.encode())
 
     def vpython_user_input_handler(self):
         """Function to send user input values to the UAV."""

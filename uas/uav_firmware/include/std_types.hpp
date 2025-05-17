@@ -1,13 +1,13 @@
 /**
  ******************************************************************************
- * @file       mcal_std_types.h
- * @author     Abdulrhman Bahaa
- * @brief      This header file includes a standard data types that be used in this project
- * @date       2024-2-09
+ * \file       mcal_std_types.hpp
+ * \author     Abdulrhman Bahaa
+ * \brief      This header file includes a standard data types that be used in this project
+ * \date       2024-2-09
  ******************************************************************************
 */
-#ifndef MCAL_STD_TYPES_H
-#define	MCAL_STD_TYPES_H
+#ifndef MCAL_STD_TYPES_HPP
+#define	MCAL_STD_TYPES_HPP
 
 /* Includes -----------------------------------------------------------------*/
 #include <avr/io.h>
@@ -42,4 +42,4 @@ typedef uint8_t          Std_ReturnType;
 
 /* Functions Declarations ---------------------------------------------------*/
 
-#endif	/* MCAL_STD_TYPES_H */
+#endif	/* MCAL_STD_TYPES_HPP */
