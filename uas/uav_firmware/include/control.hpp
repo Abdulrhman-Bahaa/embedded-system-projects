@@ -1,9 +1,9 @@
 /**
  ******************************************************************************
- * @file       control.hpp
- * @author     Abdulrhman Bahaa
- * @brief      This source file contains declarations for the drone control
- * @date       2025-05-16
+ * \file       control.hpp
+ * \author     Abdulrhman Bahaa
+ * \brief      This source file contains declarations for the drone control
+ * \date       2025-05-16
  ******************************************************************************
 */
 

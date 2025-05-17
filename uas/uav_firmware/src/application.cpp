@@ -1,7 +1,7 @@
 /**
  ******************************************************************************
- * @mainpage   UAV Project
- * @brief      Quadcopter Control System With Simple Ground Control Station
+ * \mainpage   UAV Project
+ * \brief      Quadcopter Control System With Simple Ground Control Station
  *
  * ASCII representation of the quadcopter:
  *            (Front)
@@ -20,9 +20,9 @@
  *   | Pitch (θ -> theta) | Y (East)  | Nose up (climb)                | Nose down (dive)                     |
  *   | Yaw (ψ -> psi)     | Z (Down)  | Clockwise turn (to the right)  | Counter-clockwise turn (to the left) |
  * 
- * @date    2025-03-21
- * @author  Abdulrhman Bahaa
- * @see     https://github.com/Abdulrhman-Bahaa/embedded-system-projects/tree/main/uas
+ * \date    2025-03-21
+ * \author  Abdulrhman Bahaa
+ * \see     https://github.com/Abdulrhman-Bahaa/embedded-system-projects/tree/main/uas
  ******************************************************************************
  */
 #include "application.hpp"
@@ -77,7 +77,7 @@ int main(void) {
     imu.update();
 
     /* Get the data from the GCS */
-    // gcs.receive();
+    gcs.receive();
 
     /* Send the data to the GCS */
     gcs.send();
@@ -112,16 +112,16 @@ int main(void) {
 
 /* Functions Implementations -------------------------------------------------*/
 /**
- * @brief       This function will include calls of functions to initialize 
+ * \brief       This function will include calls of functions to initialize 
  *              application's interfaces
- * @return      Returns E_OK(0x01) or E_NOT_OK(0x00) (succeeded and not succeeded)
+ * \return      Returns E_OK(0x01) or E_NOT_OK(0x00) (succeeded and not succeeded)
 */
 Std_ReturnType application_initialize(void) {
   Std_ReturnType ret = E_OK;
   /* Initialize some core peripherals like timers */
   init();
 
-  /* Initialize serial communication (USART/57600 baudrate) for GCS */
+  /* Initialize GCS */
   gcs.init();
 
   /* Initialize IMU (MPU6050 is used without DMP) */

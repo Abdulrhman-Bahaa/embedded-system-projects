@@ -1,9 +1,9 @@
 /**
  ******************************************************************************
- * @file       control.cpp
- * @author     Abdulrhman Bahaa
- * @brief      This source file contains implementations for the drone control
- * @date       2025-05-16
+ * \file       control.cpp
+ * \author     Abdulrhman Bahaa
+ * \brief      This source file contains implementations for the drone control
+ * \date       2025-05-16
  ******************************************************************************
 */
 #include "control.hpp"

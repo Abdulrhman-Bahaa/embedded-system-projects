@@ -1,9 +1,9 @@
 /**
  ******************************************************************************
- * @file       imu.cpp
- * @author     Abdulrhman Bahaa
- * @brief      This source file contains implementations for the imu functions
- * @date       2025-03-14
+ * \file       imu.cpp
+ * \author     Abdulrhman Bahaa
+ * \brief      This source file contains implementations for the imu functions
+ * \date       2025-03-14
  ******************************************************************************
 */
 #include "imu.hpp"
@@ -71,14 +71,14 @@ void Imu::update() {
 #else
 
 /**
- * @brief Constructor for the Imu class
+ * \brief Constructor for the Imu class
  */
 Imu::Imu() {
   mpu = new MPU6050(Wire);
 }
 
 /**
- * @brief Initializes the MPU6050 without DMP
+ * \brief Initializes the MPU6050 without DMP
  * @details This function initializes the MPU6050 sensor without using the DMP (Digital Motion Processor).
  *          It sets up the I2C communication and calculates the gyro offsets.
  */

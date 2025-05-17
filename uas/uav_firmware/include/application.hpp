@@ -1,9 +1,9 @@
 /**
  ******************************************************************************
- * @file       application.hpp
- * @author     Abdulrhman Bahaa
- * @brief      This source file contains declarations for the drone gcs
- * @date       2025-03-14
+ * \file       application.hpp
+ * \author     Abdulrhman Bahaa
+ * \brief      This source file contains declarations for the drone gcs
+ * \date       2025-03-14
  ******************************************************************************
 */
 #ifndef APPLICATION_HPP
@@ -57,9 +57,9 @@
 
 /* Functions Declarations ---------------------------------------------------*/
 /**
- * @brief       This function will include calls of functions to initialize 
+ * \brief       This function will include calls of functions to initialize 
  *              application's interfaces
- * @return      Returns E_OK(0x01) or E_NOT_OK(0x00) (succeeded and not succeeded)
+ * \return      Returns E_OK(0x01) or E_NOT_OK(0x00) (succeeded and not succeeded)
 */
 Std_ReturnType application_initialize(void);
 

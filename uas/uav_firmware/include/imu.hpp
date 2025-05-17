@@ -1,9 +1,9 @@
 /**
  ******************************************************************************
- * @file       imu.hpp
- * @author     Abdulrhman Bahaa
- * @brief      This header file contains declarations for the imu functions
- * @date       2025-03-17
+ * \file       imu.hpp
+ * \author     Abdulrhman Bahaa
+ * \brief      This header file contains declarations for the imu functions
+ * \date       2025-03-17
  ******************************************************************************
 */
 #ifndef IMU_HPP
