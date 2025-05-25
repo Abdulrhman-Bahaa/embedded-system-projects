@@ -4,7 +4,7 @@ This repository contains various **embedded systems projects** that I am working
 
 ## Projects Included  
 
-### [Unmanned Aerial System (UAS)](uas/)
+### [QuadVista:An Embedded Flight Controller and Ground Station Visualization Platform](uas/)
 - Implementing a **PID controller** for stability  
 - Sensor fusion using an **IMU (MPU6050)**  
 - PWM control for **motor speed adjustment**   
@@ -23,7 +23,7 @@ This repository contains various **embedded systems projects** that I am working
 
 ### [ShadowAuth (Modular password authentication system)](shadow_auth/)
 - Purpose: A secure authentication framework where the internal security logic is hidden from the user.
-- User Interaction: The user is required to implement specific interfaces (callbacks) to handle authentication flow.
+- User Interaction: The user is required to implement specific interfaces (callbacks) to handle the authentication flow.
 - Target Use Case: Ideal for embedded systems, security frameworks, or SDKs where users need to integrate with a secure system but not directly interact with sensitive logic.
 
 ## Why I Made This Repo  
