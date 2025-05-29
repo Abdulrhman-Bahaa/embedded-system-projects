@@ -278,8 +278,8 @@ class DroneSimulation:
             *state_variables_wtext_values)
 
         # Animate the drone orientation
-        # self.uav.yaw(1, 0, self.data_from_uav.psi)
-        # self.uav.pitch(1, 0, self.data_from_uav.theta)
+        self.uav.yaw(1, 0, self.data_from_uav.psi)
+        self.uav.pitch(1, 0, self.data_from_uav.theta)
         self.uav.roll(1, 0, self.data_from_uav.phi)
 
         # Propellers speed labels
