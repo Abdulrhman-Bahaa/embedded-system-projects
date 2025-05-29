@@ -17,19 +17,16 @@
  * \param pitch_controller Pointer to the PidController object for pitch
  * \param roll_controller  Pointer to the PidController object for roll
  */
-Gcs::Gcs(Imu* imu, Motor* motors, PidController* yaw_controller, PidController* pitch_controller, PidController* roll_controller) {
-    this->imu = imu;
-    this->motors = motors;
-    this->yaw_controller = yaw_controller;
-    this->pitch_controller = pitch_controller;
-    this->roll_controller = roll_controller;
-    this->motors_state = 0;
-}
+Gcs::Gcs(Imu* imu, Motor* motors, PidController* yaw_controller, PidController* pitch_controller,
+         PidController* roll_controller)
+    : imu(imu), motors(motors), yaw_controller(yaw_controller), pitch_controller(pitch_controller),
+      roll_controller(roll_controller), motors_state(0) {}
 
 /**
  * \brief This class method initializes the GCS by setting up the serial communication.
  */
-void Gcs::init() {
+void
+Gcs::init() {
     Serial.begin(57600);
 }
 
@@ -40,10 +37,12 @@ void Gcs::init() {
  *          Data shape: monitor, euler_angles[0], euler_angles[1], euler_angles[2], motors[0].pwm_value, motors[1].pwm_value, motors[2].pwm_value, motors[3].pwm_value,
  *          yaw_controller->proportional_term, yaw_controller->integral_term, yaw_controller->derivative_term,
  *          pitch_controller->proportional_term, pitch_controller->integral_term, pitch_controller->derivative_term,
- *          roll_controller->proportional_term, roll_controller->integral_term, roll_controller->derivative_term
+ *          roll_controller->proportional_term, roll_controller->integral_term, roll_controller->derivative_term,
+ *          debug0, debug1, debug2
  * \note    The data is sent in a comma-separated forma without any spaces, ending with a newline character.
  */
-void Gcs::send() {
+void
+Gcs::send() {
     Serial.print("monitor,");
     for (uint8_t i = 0; i < 3; i++) {
         Serial.print(imu->euler_angles[i]);
@@ -86,24 +85,24 @@ void Gcs::send() {
  *          or control, motors_state, yaw_setpoint, pitch_setpoint, roll_setpoint
  * \note    The data is received in a comma-separated format without any spaces, ending with a newline character.
  */
-void Gcs::receive() {
+void
+Gcs::receive() {
     if (Serial.available() > 0) {
-        String received_buffer = Serial.readStringUntil('\n');  //read received data
+        String received_buffer = Serial.readStringUntil('\n'); //read received data
 
-        char charArray[received_buffer.length() + 1];   // Create a char array
+        char charArray[received_buffer.length() + 1];              // Create a char array
         received_buffer.toCharArray(charArray, sizeof(charArray)); // Convert String to char array
 
-        char *token = strtok(charArray, ",");  // Get first token
+        char* token = strtok(charArray, ","); // Get first token
 
         if (String("config") == token) {
-           Serial.println(token);
+            Serial.println(token);
 
-           /* Size Check */
-           if (sizeof(charArray) / sizeof(charArray[0]) != 13) {
+            /* Size Check */
+            if (sizeof(charArray) / sizeof(charArray[0]) != 13) {
                 Serial.println("Invalid data size");
                 return;
-           }
-           else {
+            } else {
                 yaw_controller->kp = atof(strtok(NULL, ","));
                 yaw_controller->ki = atof(strtok(NULL, ","));
                 yaw_controller->kd = atof(strtok(NULL, ","));
@@ -116,24 +115,21 @@ void Gcs::receive() {
                 roll_controller->ki = atof(strtok(NULL, ","));
                 roll_controller->kd = atof(strtok(NULL, ","));
                 roll_controller->ka = atof(strtok(NULL, ","));
-           }
-        }
-        else if (String("control") == token) {
+            }
+        } else if (String("control") == token) {
             Serial.println(token);
 
             /* Size Check */
             if (sizeof(charArray) / sizeof(charArray[0]) != 4) {
                 Serial.println("Invalid data size");
                 return;
-            }
-            else {
+            } else {
                 motors_state = atoi(strtok(NULL, ","));
                 yaw_controller->sp = atof(strtok(NULL, ","));
                 pitch_controller->sp = atof(strtok(NULL, ","));
                 roll_controller->sp = atof(strtok(NULL, ","));
             }
-        }
-        else {
+        } else {
             Serial.println("Invalid command");
             return;
         }
