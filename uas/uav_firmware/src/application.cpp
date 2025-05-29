@@ -26,6 +26,7 @@
  ******************************************************************************
  */
 #include "application.hpp"
+#include <USB/PluggableUSBSerial.h>
 
 /* Variables Definitions ----------------------------------------------------*/
 /* Create Yaw controller using PID */
@@ -121,6 +122,10 @@ application_initialize(void) {
     Std_ReturnType ret = E_OK;
     /* Initialize some core peripherals like timers */
     init();
+
+    /* Initialize the USB device */
+    PluggableUSBD().begin();
+    _SerialUSB.begin(115200);
 
     /* Initialize GCS */
     gcs.init();
