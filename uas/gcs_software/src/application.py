@@ -1,5 +1,5 @@
 """ ---------- Main application for UAV ground control simulation  """
- 
+
 # Imports ------------------------------------------------------------
 from gcs_ui import *
 
@@ -9,16 +9,20 @@ simulation = None
 joystick = None
 
 # Main function ------------------------------------------------------
+
+
 def main():
-    application_initialize()    
+    application_initialize()
     while running:
         simulation.gcs_interface()
         simulation.data_visualize()
 
 # Functions ----------------------------------------------------------
+
+
 def application_initialize():
     global simulation
-    UAV_PROPELLERS_NUM = 4   
+    UAV_PROPELLERS_NUM = 4
     PORTS = {
         "bluetooth": '/dev/rfcomm0',
         "simulation": '/dev/tnt1',
@@ -37,7 +41,7 @@ def application_initialize():
 
     if SERIAL:
         try:
-            ser = serial.Serial(PORTS['simulation'], BAUD_RATE, timeout=1)
+            ser = serial.Serial(PORTS['arduino'], BAUD_RATE, timeout=1)
         except serial.SerialException as e:
             print(f"Serial connection error: {e}")
             ser = None  # Prevent crash
@@ -45,10 +49,11 @@ def application_initialize():
     if JOYSTICK_INPUT:
         joystick_init()
 
-    simulation = DroneSimulation(uav=uav1, data_from_uav=data_from_uav, data_to_uav=data_to_uav, 
+    simulation = DroneSimulation(uav=uav1, data_from_uav=data_from_uav, data_to_uav=data_to_uav,
                                  graphs_xmax=GRAPHS_XMAX, ser=ser, joystick_input=JOYSTICK_INPUT)
 
     scene.bind('keydown', keyInput)
+
 
 def keyInput(evt):
     global running
@@ -56,6 +61,7 @@ def keyInput(evt):
         running = False
     elif evt.key == 's':
         simulation.send_data = True
+
 
 def joystick_init():
     """Initialize pygame and detect joysticks"""
@@ -73,6 +79,7 @@ def joystick_init():
     print(f"Connected to: {joystick.get_name()}")
 
 # Classes ----------------------------------------------------------
+
 
 # Main calling -------------------------------------------------------
 if __name__ == "__main__":
