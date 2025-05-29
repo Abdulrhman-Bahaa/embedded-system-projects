@@ -35,4 +35,5 @@ Motor::init() {
 void
 Motor::set_pwm(uint16_t pwm_value) {
     analogWrite(pin, (uint8_t)pwm_value);
+    this->pwm_value = pwm_value;
 }
