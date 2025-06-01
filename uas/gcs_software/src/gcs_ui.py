@@ -240,8 +240,6 @@ class DroneSimulation:
         self.drone_3d_model.propellers_labels[3].text = str(
             (self.data_from_uav.pwm3 / 256) * 100) + '%'
 
-        Ploting on graphs
-        Check if scaling required
         if (round(self.visualization_current_time % self.graphs_xmax, 1) == 0) and ((self.visualization_current_time - self.scale_time) > 1):
             self.scale_time = self.visualization_current_time
             self.sp_curve.delete()
