@@ -133,7 +133,10 @@ def send_to_uav(ser: Serial, data_type: str, controller: str, data_to_uav: DataT
         data_local = ','.join(map(str, data_local)).encode()
 
         if ser.is_open and ser.writable() and ser.out_waiting == 0:
-            ser.write(data_local + b'\n')
+            try:
+                ser.write(data_local + b'\n')
+            except Exception as e:
+                print("Serial error during click:", e)
 
 
 def receive_from_uav(ser: Serial, data_from_uav: DataFromUAV):
