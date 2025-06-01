@@ -1,100 +1,39 @@
-# Imports ------------------------------------------------------------------
-from dataclasses import dataclass, field, is_dataclass, fields
-import serial
+# Imports ---------------------------------------------------------------------
+import gcs_backend
 import time
-from uav import *
+import uav
+from vpython import *
 import pygame
 
-# Variables Definitions ----------------------------------------------------
+
+# Variables Definitions -------------------------------------------------------
+
 # Min and max phi angle
+old_range = (-1, 1)
 new_range = (-40, 40)
 
-# Not configurable variables
-old_range = (-1, 1)
 
-# Functions ------------------------------------------------------------------
-
+# Functions -------------------------------------------------------------------
 
 def scale_value(x, old_min, old_max, new_min, new_max):
     return ((x - old_min) / (old_max - old_min)) * (new_max - new_min) + new_min
 
 
-def iterate_dataclass(obj, data):
-    for f in fields(obj):
-        value = getattr(obj, f.name)
-        if is_dataclass(value):
-            iterate_dataclass(value, data)
-        else:
-            data.append(value)
-    return data
-
-
 def do_nothing(evt):
     pass
 
-# Classes --------------------------------------------------------------------
 
-
-@dataclass
-class UAVData:
-    psi: float = 0.0
-    theta: float = 0.0
-    phi: float = 0.0
-    pwm0: int = 0
-    pwm1: int = 0
-    pwm2: int = 0
-    pwm3: int = 0
-
-    yaw_proportional_term: float = 0.0
-    yaw_integral_term: float = 0.0
-    yaw_derivative_term: float = 0.0
-    pitch_proportional_term: float = 0.0
-    pitch_integral_term: float = 0.0
-    pitch_derivative_term: float = 0.0
-    roll_proportional_term: float = 0.0
-    roll_integral_term: float = 0.0
-    roll_derivative_term: float = 0.0
-
-    debug0: float = 0.0
-    debug1: float = 0.0
-    debug2: float = 0.0
-
-
-@dataclass
-class PidParameters:
-    """ PID parameters for UAV control """
-    """ kp: proportional gain
-        ki: integral gain
-        kd: derivative gain
-        ka: ant-windup gain
-        sp: setpoint (desired value)
-    """
-    kp: float = 0.0
-    ki: float = 0.0
-    kd: float = 0.0
-    ka: float = 0.0
-    sp: float = 0.0
-
-
-@dataclass
-class UAVCommand:
-    motors_state: int = 0
-    yaw_controller: PidParameters = field(default_factory=PidParameters)
-    pitch_controller: PidParameters = field(default_factory=PidParameters)
-    roll_controller: PidParameters = field(default_factory=PidParameters)
-
+# Classes ---------------------------------------------------------------------
 
 class DroneSimulation:
-    def __init__(self, uav: Drone, data_from_uav: UAVData, data_to_uav: UAVCommand, graphs_xmax, ser=None, joystick_input=False):
-        """Initialize the simulation with all VPython objects."""
+    def __init__(self, ser=None, joystick_input=False):
 
-        # Store external parameters
-        self.data_to_uav = data_to_uav
-        self.data_from_uav = data_from_uav
-        self.data_to_uav_length = len(vars(data_to_uav))
-        self.data_from_uav_length = len(vars(data_from_uav))
-        self.graphs_xmax = graphs_xmax
-        self.uav_min_altitude = 0.148
+        if ser is None:
+            RuntimeError('No serial provided, cannot send data to UAV')
+
+        self.ser = ser
+        self.graphs_xmax = 30
+        self.drone_3d_model_min_altitude = 0.148
         self.first_visualization = True
         self.visualization_start_time = 0
         self.visualization_current_time = 0
@@ -104,14 +43,22 @@ class DroneSimulation:
         self.send_data = False
         self.winput_values = []
         self.controllers_menu = None
+        self.data_from_uav = gcs_backend.DataFromUAV()
+        self.data_to_uav = gcs_backend.DataToUAV()
+        self.selected_controller_object = None
+        self.btns = []
+        self.wts = []
+        self.sliders = []
+        self.running = True
 
-        if ser is None:
-            print("No serial provided")
-        else:
-            self.ser = ser
+        self.pid_winputs = {
+            'kp': None,
+            'ki': None,
+            'kd': None,
+            'ka': None
+        }
 
-        # Scene configs
-        self.scene_setup()
+        scene.bind('keydown', self.evt_handler)
 
         # Create ground
         self.ground = box(
@@ -121,9 +68,19 @@ class DroneSimulation:
             texture=textures.rough
         )
 
-        # Create the drone 3d model
-        self.uav = uav
-        self.uav.pos = vec(0, self.uav_min_altitude + 1, 0)
+        self.drone_3d_model = uav.Drone()
+        self.drone_3d_model.pos = vec(
+            0, self.drone_3d_model_min_altitude + 1, 0)
+
+        # Scene configs
+        scene.width = 1900
+        scene.height = 390
+        scene.background = color.cyan
+        scene.autoscale = False
+        scene.range = 1
+        scene.center = vec(0, self.drone_3d_model_min_altitude + 1, 0)
+        scene.forward = vec(1,  -0.5, 0)
+        scene.align = 'none'
 
         # Create input fields
         self.create_inputs()
@@ -136,39 +93,85 @@ class DroneSimulation:
         # Create graphs
         self.create_graphs()
 
-    def scene_setup(self):
-        """Vpython scene configurations"""
-        scene.width = 1900
-        scene.height = 390
-        scene.background = color.cyan
-        scene.autoscale = False
-        scene.range = 1
-        scene.center = vec(0, self.uav_min_altitude + 1, 0)
-        scene.forward = vec(1,  -0.5, 0)
-        scene.align = 'none'
+    def evt_handler(self, evt):
+        """Handle events from the UI."""
+
+        if hasattr(evt, 'key') and evt.key == 'esc':
+            self.running = False
+
+        if hasattr(evt, 'id'):
+            # Controllers menu selection
+            if evt.id == 0:
+                # Update selected controller object based on menu selection
+                if self.controllers_menu.selected == 'yaw':
+                    self.selected_controller_object = self.data_to_uav.yaw_controller
+                elif self.controllers_menu.selected == 'pitch':
+                    self.selected_controller_object = self.data_to_uav.pitch_controller
+                elif self.controllers_menu.selected == 'roll':
+                    self.selected_controller_object = self.data_to_uav.roll_controller
+                else:
+                    raise RuntimeError('Invalid controller selected')
+
+                # Update input fields with selected controller values
+                # PID inputs
+                self.pid_winputs['kp'].text = self.selected_controller_object.kp
+                self.pid_winputs['ki'].text = self.selected_controller_object.ki
+                self.pid_winputs['kd'].text = self.selected_controller_object.kd
+                self.pid_winputs['ka'].text = self.selected_controller_object.ka
+                self.sliders[0].value = self.selected_controller_object.sp
+
+            # Send Configs button
+            if evt.id == 5:
+                self.selected_controller_object.kp = 0 if self.pid_winputs[
+                    'kp'].number is None else self.pid_winputs['kp'].number
+                self.selected_controller_object.ki = 0 if self.pid_winputs[
+                    'ki'].number is None else self.pid_winputs['ki'].number
+                self.selected_controller_object.kd = 0 if self.pid_winputs[
+                    'kd'].number is None else self.pid_winputs['kd'].number
+                self.selected_controller_object.ka = 0 if self.pid_winputs[
+                    'ka'].number is None else self.pid_winputs['ka'].number
+
+                gcs_backend.send_to_uav(
+                    self.ser, 'config', self.controllers_menu.selected, self.data_to_uav)
+
+            # Setpoint slider
+            if evt.id == 6:
+                self.selected_controller_object.sp = evt.value
+
+                self.wts[6].text = '{:1.1f}°'.format(evt.value)
+                gcs_backend.send_to_uav(
+                    self.ser, 'control', self.controllers_menu.selected, self.data_to_uav)
 
     def create_inputs(self):
         """Create user input fields for control variables."""
-        controllers_choice_list = []
-        scene.append_to_caption('\n\t')
+        inputs_number = 0
 
-        for key, value in vars(self.data_to_uav).items():
-            if not is_dataclass(value):
-                scene.append_to_caption(key + ' = ')
-                self.winput_values.append(
-                    winput(bind=do_nothing, type='numeric', id=key))
-            else:
-                controllers_choice_list.append(key)
-
-        for key, value in vars(self.data_to_uav.pitch_controller).items():
-            scene.append_to_caption(key + ' = ')
-            self.winput_values.append(
-                winput(bind=do_nothing, type='numeric', id=key))
-
+        self.wts.append(wtext(text=' ' + 'Selected controller' +
+                              ' : ', id=inputs_number))
         self.controllers_menu = menu(
-            bind=do_nothing, choices=controllers_choice_list, index=0)
+            bind=self.evt_handler, choices=['yaw', 'pitch', 'roll'], selected='yaw', id=inputs_number)
+        self.selected_controller_object = self.data_to_uav.yaw_controller
 
-        scene.append_to_caption('\t')
+        inputs_number = inputs_number + 1
+
+        for key in self.pid_winputs.keys():
+            self.wts.append(wtext(text=' ' + key + ' : ', id=inputs_number))
+            self.pid_winputs[key] = winput(
+                bind=do_nothing, type='numeric', id=inputs_number)
+            inputs_number = inputs_number + 1
+
+        scene.append_to_caption(' ')
+
+        self.btns.append(button(bind=self.evt_handler,
+                         text='Send Configs', id=inputs_number))
+        inputs_number = inputs_number + 1
+
+        self.wts.append(wtext(text=' ' + 'Setpoint' + ' : ', id=inputs_number))
+        self.sliders.append(slider(bind=self.evt_handler, min=-90,
+                                   max=90, id=inputs_number, value=0, step=1))
+        inputs_number = inputs_number + 1
+
+        self.wts.append(wtext(text='0.0°', id=inputs_number))
 
     def create_graphs(self):
         """Create graphs for the simulation."""
@@ -198,48 +201,7 @@ class DroneSimulation:
             color=color.purple, label='D', graph=self.graph2)
 
     def receive_from_uav(self):
-        if self.ser.in_waiting > 0:  # Check if data is available
-            # Read a line from Arduino
-            try:
-                line = self.ser.readline().decode(
-                    'utf-8', errors='ignore').strip()  # Read and decode
-                # Split by comma
-                data = line.split(',')
-                if data[0] == "monitor" and len(data) == self.data_from_uav_length + 1:
-                    data = [float(x) for x in data if x not in ["monitor", ""]]
-                    i = 0
-                    for key, value in vars(self.data_from_uav).items():
-                        setattr(self.data_from_uav, key, data[i])
-                        i = i + 1
-            except Exception as e:
-                print(e)
-
-    def send_to_uav(self):
-        data = []
-        data = iterate_dataclass(self.data_to_uav, data)
-        data = ','.join(map(str, data))
-        data += '\n'
-        self.ser.write(data.encode())
-        # print(data.encode())
-
-    def vpython_user_input_handler(self):
-        """Function to send user input values to the UAV."""
-        setattr(self.data_to_uav, 'motors_state',
-                0 if self.winput_values[0].number is None else self.winput_values[0].number)
-
-        controller_selected = getattr(
-            self.data_to_uav, str(self.controllers_menu.selected))
-
-        controller_selected.kp = 0 if self.winput_values[
-            1].number is None else self.winput_values[1].number
-        controller_selected.ki = 0 if self.winput_values[
-            2].number is None else self.winput_values[2].number
-        controller_selected.kd = 0 if self.winput_values[
-            3].number is None else self.winput_values[3].number
-        controller_selected.ka = 0 if self.winput_values[
-            4].number is None else self.winput_values[4].number
-        controller_selected.sp = 0 if self.winput_values[
-            5].number is None else self.winput_values[5].number
+        gcs_backend.receive_from_uav(self.ser, self.data_from_uav)
 
     def joystick_data_handler(self):
         for event in pygame.event.get():
@@ -249,20 +211,6 @@ class DroneSimulation:
                     self.data_to_uav.phi_sp = scale_value(
                         event.value, *old_range, *new_range)
                     self.send_to_uav()
-
-    def gcs_interface(self):
-        """ Responsible of getting data from uav and send commands to it"""
-        if self.send_data:
-            # Send data to uav
-            self.vpython_user_input_handler()
-            self.send_to_uav()
-            self.send_data = False
-        # Get data from uav
-        if self.ser:
-            self.receive_from_uav()
-        # Send data to uav
-        if self.joystick_input:
-            self.joystick_data_handler()
 
     def data_visualize(self):
         if self.first_visualization:
@@ -278,22 +226,22 @@ class DroneSimulation:
             *state_variables_wtext_values)
 
         # Animate the drone orientation
-        self.uav.yaw(1, 0, self.data_from_uav.psi)
-        self.uav.pitch(1, 0, self.data_from_uav.theta)
-        self.uav.roll(1, 0, self.data_from_uav.phi)
+        # self.drone_3d_model.yaw(1, 0, self.data_from_uav.psi)
+        # self.drone_3d_model.pitch(1, 0, self.data_from_uav.theta)
+        self.drone_3d_model.roll(1, 0, self.data_from_uav.phi)
 
         # Propellers speed labels
-        self.uav.propellers_labels[0].text = str(
+        self.drone_3d_model.propellers_labels[0].text = str(
             (self.data_from_uav.pwm0 / 256) * 100) + '%'
-        self.uav.propellers_labels[1].text = str(
+        self.drone_3d_model.propellers_labels[1].text = str(
             (self.data_from_uav.pwm1 / 256) * 100) + '%'
-        self.uav.propellers_labels[2].text = str(
+        self.drone_3d_model.propellers_labels[2].text = str(
             (self.data_from_uav.pwm2 / 256) * 100) + '%'
-        self.uav.propellers_labels[3].text = str(
+        self.drone_3d_model.propellers_labels[3].text = str(
             (self.data_from_uav.pwm3 / 256) * 100) + '%'
 
-        # Ploting on graphs
-        # Check if scaling required
+        Ploting on graphs
+        Check if scaling required
         if (round(self.visualization_current_time % self.graphs_xmax, 1) == 0) and ((self.visualization_current_time - self.scale_time) > 1):
             self.scale_time = self.visualization_current_time
             self.sp_curve.delete()
@@ -320,7 +268,7 @@ class DroneSimulation:
             self.xmax_reached_num = self.xmax_reached_num + 1
         else:
 
-            if self.controllers_menu.selected == 'yaw_controller':
+            if self.controllers_menu.selected == 'yaw':
                 self.control_curve.plot(self.visualization_current_time,
                                         self.data_from_uav.yaw_proportional_term + self.data_from_uav.yaw_integral_term + self.data_from_uav.yaw_derivative_term)
                 self.proportional_term_curve.plot(
@@ -329,13 +277,13 @@ class DroneSimulation:
                     self.visualization_current_time, self.data_from_uav.yaw_integral_term)
                 self.derivative_term_curve.plot(
                     self.visualization_current_time, self.data_from_uav.yaw_derivative_term)
-                self.sp_curve.plot(self.visualization_current_time,
-                                   self.data_to_uav.yaw_controller.sp)
+                # self.sp_curve.plot(self.visualization_current_time,
+                #                    self.data_to_uav.yaw_controller.sp)
                 self.pv_curve.plot(
                     self.visualization_current_time, self.data_from_uav.psi)
                 self.graph1.title = 'Psi angle ψ(t)'
                 self.graph2.title = 'Yaw control signal u(t)'
-            elif self.controllers_menu.selected == 'pitch_controller':
+            elif self.controllers_menu.selected == 'pitch':
                 self.control_curve.plot(self.visualization_current_time,
                                         self.data_from_uav.pitch_proportional_term + self.data_from_uav.pitch_integral_term + self.data_from_uav.pitch_derivative_term)
                 self.proportional_term_curve.plot(
@@ -344,13 +292,13 @@ class DroneSimulation:
                     self.visualization_current_time, self.data_from_uav.pitch_integral_term)
                 self.derivative_term_curve.plot(
                     self.visualization_current_time, self.data_from_uav.pitch_derivative_term)
-                self.sp_curve.plot(self.visualization_current_time,
-                                   self.data_to_uav.pitch_controller.sp)
+                # self.sp_curve.plot(self.visualization_current_time,
+                #                    self.data_to_uav.pitch_controller.sp)
                 self.pv_curve.plot(
                     self.visualization_current_time, self.data_from_uav.theta)
                 self.graph1.title = 'Theta angle θ(t)'
                 self.graph2.title = 'Pitch control signal u(t)'
-            elif self.controllers_menu.selected == 'roll_controller':
+            elif self.controllers_menu.selected == 'roll':
                 self.control_curve.plot(self.visualization_current_time,
                                         self.data_from_uav.roll_proportional_term + self.data_from_uav.roll_integral_term + self.data_from_uav.roll_derivative_term)
                 self.proportional_term_curve.plot(
@@ -359,11 +307,22 @@ class DroneSimulation:
                     self.visualization_current_time, self.data_from_uav.roll_integral_term)
                 self.derivative_term_curve.plot(
                     self.visualization_current_time, self.data_from_uav.roll_derivative_term)
-                self.sp_curve.plot(self.visualization_current_time,
-                                   self.data_to_uav.roll_controller.sp)
+                # self.sp_curve.plot(self.visualization_current_time,
+                #                    self.data_to_uav.roll_controller.sp)
                 self.pv_curve.plot(
                     self.visualization_current_time, self.data_from_uav.phi)
                 self.graph1.title = 'Phi angle φ(t)'
                 self.graph2.title = 'Roll control signal u(t)'
             else:
                 pass
+
+    def start(self):
+        """Start the drone simulation."""
+        while self.running:
+            # Receive data from UAV
+            self.receive_from_uav()
+            # Handle joystick input if enabled
+            if self.joystick_input:
+                self.joystick_data_handler()
+            # Visualize data
+            self.data_visualize()
