@@ -198,9 +198,6 @@ class DroneSimulation:
         self.derivative_term_curve = gcurve(
             color=color.purple, label='D', graph=self.graph2)
 
-    def receive_from_uav(self):
-        gcs_backend.receive_from_uav(self.ser, self.data_from_uav)
-
     def joystick_data_handler(self):
         for event in pygame.event.get():
             if event.type == pygame.JOYAXISMOTION:
@@ -298,7 +295,7 @@ class DroneSimulation:
         """Start the drone simulation."""
         while self.running:
             # Receive data from UAV
-            self.receive_from_uav()
+            gcs_backend.receive_from_uav(self.ser, self.data_from_uav)
             # Handle joystick input if enabled
             if self.joystick_input:
                 self.joystick_data_handler()
