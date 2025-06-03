@@ -48,7 +48,6 @@ class DroneSimulation:
         self.selected_controller_object = None
         self.btns = []
         self.wts = []
-        self.sliders = []
         self.running = True
         self.PWM_RESOLUTION = 256
 
@@ -56,7 +55,8 @@ class DroneSimulation:
             'kp': None,
             'ki': None,
             'kd': None,
-            'ka': None
+            'ka': None,
+            'sp': None
         }
 
         scene.bind('keydown', self.evt_handler)
@@ -119,7 +119,7 @@ class DroneSimulation:
                 self.pid_winputs['ki'].text = self.selected_controller_object.ki
                 self.pid_winputs['kd'].text = self.selected_controller_object.kd
                 self.pid_winputs['ka'].text = self.selected_controller_object.ka
-                self.sliders[0].value = self.selected_controller_object.sp
+                self.pid_winputs['sp'].text = self.selected_controller_object.sp
 
             # Send Configs button
             if evt.id == 5:
@@ -135,11 +135,10 @@ class DroneSimulation:
                 gcs_backend.send_to_uav(
                     self.ser, 'config', self.controllers_menu.selected, self.data_to_uav)
 
-            # Setpoint slider
+            # Setpoint field
             if evt.id == 6:
-                self.selected_controller_object.sp = evt.value
+                self.selected_controller_object.sp = evt.number
 
-                self.wts[6].text = '{:1.1f}°'.format(evt.value)
                 gcs_backend.send_to_uav(
                     self.ser, 'control', self.controllers_menu.selected, self.data_to_uav)
 
@@ -168,11 +167,9 @@ class DroneSimulation:
         inputs_number = inputs_number + 1
 
         self.wts.append(wtext(text=' ' + 'Setpoint' + ' : ', id=inputs_number))
-        self.sliders.append(slider(bind=self.evt_handler, min=-90,
-                                   max=90, id=inputs_number, value=0, step=1))
+        self.pid_winputs['sp'] = winput(
+            bind=self.evt_handler, type='numeric', id=inputs_number)
         inputs_number = inputs_number + 1
-
-        self.wts.append(wtext(text='0.0°', id=inputs_number))
 
     def create_graphs(self):
         """Create graphs for the simulation."""
