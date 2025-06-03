@@ -94,10 +94,10 @@ Gcs::receive() {
             selected_controller->ki = atof(strtok(NULL, ","));
             selected_controller->kd = atof(strtok(NULL, ","));
             selected_controller->ka = atof(strtok(NULL, ","));
+            Serial.println("ok");
         } else {
             Serial.println("error");
             return;
         }
-        Serial.println("ok");
     }
 }
