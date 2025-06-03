@@ -25,10 +25,28 @@
  * \see     https://github.com/Abdulrhman-Bahaa/embedded-system-projects/tree/main/uas
  ******************************************************************************
  */
+
+/* includes ----------------------------------------------------------------*/
+
 #include "application.hpp"
 #include <USB/PluggableUSBSerial.h>
+#include "control.hpp"
+#include "gcs.hpp"
+#include "imu.hpp"
+#include "motors.hpp"
+#include "std_types.hpp"
+
+/* Functions Declarations ---------------------------------------------------*/
+
+/**
+ * \brief       This function will include calls of functions to initialize 
+ *              application's interfaces
+ * \return      Returns E_OK(0x01) or E_NOT_OK(0x00) (succeeded and not succeeded)
+*/
+Std_ReturnType application_initialize(void);
 
 /* Variables Definitions ----------------------------------------------------*/
+
 /* Create Yaw controller using PID */
 PidController yaw_controller(YAW_CONTROLLER_KP, YAW_CONTROLLER_KI, YAW_CONTROLLER_KD, YAW_CONTROLLER_KA,
                              YAW_CONTROLLER_SP, YAW_CONTROLLER_MIN_YAW_ACTUATOR_COMMAND,
@@ -54,9 +72,10 @@ Imu imu;
 Gcs gcs(&imu, motors, &yaw_controller, &pitch_controller, &roll_controller);
 
 /* altitude_actuator_command value will be fixed (Since no altitude controller is implemented) */
-uint8_t yaw_actuator_command, pitch_actuator_command, roll_actuator_command, altitude_actuator_command = 128;
+uint16_t yaw_actuator_command, pitch_actuator_command, roll_actuator_command, altitude_actuator_command = 128;
 
 /* Main Function ------------------------------------------------------------*/
+
 int
 main(void) {
     Std_ReturnType ret = E_OK;
@@ -64,6 +83,7 @@ main(void) {
 
     if (E_OK != ret) {
         /* Error in initialization */
+        digitalWrite(LED_BUILTIN, HIGH); // Turn on the LED to indicate error
         while (1)
             ;
     }
@@ -89,34 +109,22 @@ main(void) {
         pitch_actuator_command = pitch_controller.actual_pid_output;
         roll_actuator_command = roll_controller.actual_pid_output;
 
-        /* Apply action on the plant when motors_state is one (Changed from gcs) */
-        if (1 == gcs.motors_state) {
-            /* Motor mixing formula */
-            motors[0].set_pwm(altitude_actuator_command - pitch_actuator_command - yaw_actuator_command
-                              - roll_actuator_command);
-            motors[1].set_pwm(altitude_actuator_command + pitch_actuator_command - yaw_actuator_command
-                              - roll_actuator_command);
-            motors[2].set_pwm(altitude_actuator_command + pitch_actuator_command + yaw_actuator_command
-                              + roll_actuator_command);
-            motors[3].set_pwm(altitude_actuator_command - pitch_actuator_command + yaw_actuator_command
-                              + roll_actuator_command);
-        } else {
-            /* Stop the motors when motors_state is zero (Changed from gcs) */
-            motors[0].set_pwm(0);
-            motors[1].set_pwm(0);
-            motors[2].set_pwm(0);
-            motors[3].set_pwm(0);
-        }
+        /* Apply action on the plant*/
+        /* Motor mixing formula */
+        motors[0].set_pwm(altitude_actuator_command - pitch_actuator_command - yaw_actuator_command
+                          - roll_actuator_command);
+        motors[1].set_pwm(altitude_actuator_command + pitch_actuator_command - yaw_actuator_command
+                          - roll_actuator_command);
+        motors[2].set_pwm(altitude_actuator_command + pitch_actuator_command + yaw_actuator_command
+                          + roll_actuator_command);
+        motors[3].set_pwm(altitude_actuator_command - pitch_actuator_command + yaw_actuator_command
+                          + roll_actuator_command);
     }
     return 0;
 }
 
 /* Functions Implementations -------------------------------------------------*/
-/**
- * \brief       This function will include calls of functions to initialize 
- *              application's interfaces
- * \return      Returns E_OK(0x01) or E_NOT_OK(0x00) (succeeded and not succeeded)
-*/
+
 Std_ReturnType
 application_initialize(void) {
     Std_ReturnType ret = E_OK;
