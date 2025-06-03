@@ -34,6 +34,7 @@ Motor::init() {
  */
 void
 Motor::set_pwm(uint16_t pwm_value) {
-    analogWrite(pin, (uint8_t)pwm_value);
+    pwm_value = constrain(pwm_value, 0, MAX_MOTOR_PWM_VALUE); // Constrain to valid range
+    analogWrite(pin, pwm_value);
     this->pwm_value = pwm_value;
 }
