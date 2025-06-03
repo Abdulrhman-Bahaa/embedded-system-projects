@@ -50,6 +50,7 @@ class DroneSimulation:
         self.wts = []
         self.sliders = []
         self.running = True
+        self.PWM_RESOLUTION = 256
 
         self.pid_winputs = {
             'kp': None,
@@ -232,13 +233,13 @@ class DroneSimulation:
 
         # Propellers speed labels
         self.drone_3d_model.propellers_labels[0].text = str(
-            (self.data_from_uav.pwm0 / 256) * 100) + '%'
+            round((self.data_from_uav.pwm0 / self.PWM_RESOLUTION) * 100)) + '%'
         self.drone_3d_model.propellers_labels[1].text = str(
-            (self.data_from_uav.pwm1 / 256) * 100) + '%'
+            round((self.data_from_uav.pwm1 / self.PWM_RESOLUTION) * 100)) + '%'
         self.drone_3d_model.propellers_labels[2].text = str(
-            (self.data_from_uav.pwm2 / 256) * 100) + '%'
+            round((self.data_from_uav.pwm2 / self.PWM_RESOLUTION) * 100)) + '%'
         self.drone_3d_model.propellers_labels[3].text = str(
-            (self.data_from_uav.pwm3 / 256) * 100) + '%'
+            round((self.data_from_uav.pwm3 / self.PWM_RESOLUTION) * 100)) + '%'
 
         if (round(self.visualization_current_time % self.graphs_xmax, 1) == 0) and ((self.visualization_current_time - self.scale_time) > 1):
             self.scale_time = self.visualization_current_time
@@ -265,54 +266,36 @@ class DroneSimulation:
 
             self.xmax_reached_num = self.xmax_reached_num + 1
         else:
-
+            # Plot the data
             if self.controllers_menu.selected == 'yaw':
-                self.control_curve.plot(self.visualization_current_time,
-                                        self.data_from_uav.yaw_proportional_term + self.data_from_uav.yaw_integral_term + self.data_from_uav.yaw_derivative_term)
-                self.proportional_term_curve.plot(
-                    self.visualization_current_time, self.data_from_uav.yaw_proportional_term)
-                self.integral_term_curve.plot(
-                    self.visualization_current_time, self.data_from_uav.yaw_integral_term)
-                self.derivative_term_curve.plot(
-                    self.visualization_current_time, self.data_from_uav.yaw_derivative_term)
-                # self.sp_curve.plot(self.visualization_current_time,
-                #                    self.data_to_uav.yaw_controller.sp)
-                self.pv_curve.plot(
-                    self.visualization_current_time, self.data_from_uav.psi)
-                self.graph1.title = 'Psi angle ψ(t)'
-                self.graph2.title = 'Yaw control signal u(t)'
+                controller_terms = [self.data_from_uav.yaw_proportional_term,
+                                    self.data_from_uav.yaw_integral_term,
+                                    self.data_from_uav.yaw_derivative_term]
+                controller_pv = self.data_from_uav.psi
             elif self.controllers_menu.selected == 'pitch':
-                self.control_curve.plot(self.visualization_current_time,
-                                        self.data_from_uav.pitch_proportional_term + self.data_from_uav.pitch_integral_term + self.data_from_uav.pitch_derivative_term)
-                self.proportional_term_curve.plot(
-                    self.visualization_current_time, self.data_from_uav.pitch_proportional_term)
-                self.integral_term_curve.plot(
-                    self.visualization_current_time, self.data_from_uav.pitch_integral_term)
-                self.derivative_term_curve.plot(
-                    self.visualization_current_time, self.data_from_uav.pitch_derivative_term)
-                # self.sp_curve.plot(self.visualization_current_time,
-                #                    self.data_to_uav.pitch_controller.sp)
-                self.pv_curve.plot(
-                    self.visualization_current_time, self.data_from_uav.theta)
-                self.graph1.title = 'Theta angle θ(t)'
-                self.graph2.title = 'Pitch control signal u(t)'
+                controller_terms = [self.data_from_uav.pitch_proportional_term,
+                                    self.data_from_uav.pitch_integral_term,
+                                    self.data_from_uav.pitch_derivative_term]
+                controller_pv = self.data_from_uav.theta
             elif self.controllers_menu.selected == 'roll':
-                self.control_curve.plot(self.visualization_current_time,
-                                        self.data_from_uav.roll_proportional_term + self.data_from_uav.roll_integral_term + self.data_from_uav.roll_derivative_term)
-                self.proportional_term_curve.plot(
-                    self.visualization_current_time, self.data_from_uav.roll_proportional_term)
-                self.integral_term_curve.plot(
-                    self.visualization_current_time, self.data_from_uav.roll_integral_term)
-                self.derivative_term_curve.plot(
-                    self.visualization_current_time, self.data_from_uav.roll_derivative_term)
-                # self.sp_curve.plot(self.visualization_current_time,
-                #                    self.data_to_uav.roll_controller.sp)
-                self.pv_curve.plot(
-                    self.visualization_current_time, self.data_from_uav.phi)
-                self.graph1.title = 'Phi angle φ(t)'
-                self.graph2.title = 'Roll control signal u(t)'
+                controller_terms = [self.data_from_uav.roll_proportional_term,
+                                    self.data_from_uav.roll_integral_term,
+                                    self.data_from_uav.roll_derivative_term]
+                controller_pv = self.data_from_uav.phi
             else:
-                pass
+                raise RuntimeError('Invalid controller selected')
+
+            self.control_curve.plot(self.visualization_current_time,
+                                    sum(controller_terms))
+            self.proportional_term_curve.plot(
+                self.visualization_current_time, controller_terms[0])
+            self.integral_term_curve.plot(
+                self.visualization_current_time, controller_terms[1])
+            self.derivative_term_curve.plot(
+                self.visualization_current_time, controller_terms[2])
+            self.pv_curve.plot(self.visualization_current_time, controller_pv)
+            self.sp_curve.plot(self.visualization_current_time,
+                               self.selected_controller_object.sp)
 
     def start(self):
         """Start the drone simulation."""

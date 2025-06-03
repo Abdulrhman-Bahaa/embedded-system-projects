@@ -119,10 +119,10 @@ def send_to_uav(ser: Serial, data_type: str, controller: str, data_to_uav: DataT
             raise RuntimeError('Invalid controller')
 
         if data_type == 'control':
-            data_type_local = 0x6C
+            data_type_local = 'l'
             data_local = [controller_object.sp]
         elif data_type == 'config':
-            data_type_local = 0x67
+            data_type_local = 'g'
             data_local = [controller_object.kp, controller_object.ki,
                           controller_object.kd, controller_object.ka]
         else:
@@ -157,12 +157,14 @@ def receive_from_uav(ser: Serial, data_from_uav: DataFromUAV):
                 line = ser.readline().decode(
                     'utf-8', errors='ignore').strip()
                 data = line.split(',')
-                if data[0] == "monitor" and len(data) == 20:
+                if data[0] == 'm' and len(data) == 20:
                     i = 1
                     for key in asdict(data_from_uav).keys():
                         if data[i] != '':
                             setattr(data_from_uav, key, float(data[i]))
                         i = i + 1
+                else:
+                    print(line)
 
             except Exception as e:
                 print(e)
