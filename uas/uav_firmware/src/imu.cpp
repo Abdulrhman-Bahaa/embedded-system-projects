@@ -92,7 +92,7 @@ mpu6050_without_dmp_init(MPU6050* mpu) {
 void
 mpu6050_without_dmp_get_angles(MPU6050* mpu, float* euler_angles) {
     mpu->update();
-    euler_angles[0] = 0;
+    euler_angles[0] = mpu->getAngleZ();
     euler_angles[1] = mpu->getAngleX();
     euler_angles[2] = mpu->getAngleY();
 }

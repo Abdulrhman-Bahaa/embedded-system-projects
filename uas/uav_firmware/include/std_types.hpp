@@ -23,7 +23,6 @@
 #define E_NOT_OK                  (Std_ReturnType)0x00
 #define STD_ACTIVE                0x01
 #define STD_IDLE                  0x00
-#define NULL                      (void*)0
 
 /* Macro Functions Declarations ---------------------------------------------*/
 #define SET_BIT(REG, BIT_POSN)    (REG |= (BIT_MASK << BIT_POSN))
