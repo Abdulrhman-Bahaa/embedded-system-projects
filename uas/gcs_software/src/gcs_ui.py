@@ -4,6 +4,7 @@ import time
 import uav
 from vpython import *
 import pygame
+from decimal import Decimal
 
 
 # Variables Definitions -------------------------------------------------------
@@ -154,7 +155,7 @@ class DroneSimulation:
 
         inputs_number = inputs_number + 1
 
-        for key in self.pid_winputs.keys():
+        for key in list(self.pid_winputs.keys())[0:4]:  # Exclude 'sp'
             self.wts.append(wtext(text=' ' + key + ' : ', id=inputs_number))
             self.pid_winputs[key] = winput(
                 bind=do_nothing, type='numeric', id=inputs_number)
@@ -177,11 +178,11 @@ class DroneSimulation:
 
         # Graphs
         self.graph1 = graph(title='Process variable', align='left',
-                            xtitle='Time(s)', fast=False, ytitle='Angle(°)',
+                            xtitle='Time(s)', fast=True, ytitle='Angle(°)',
                             xmin=0, xmax=self.graphs_xmax, height=440, width=800, scroll=False)
 
         self.graph2 = graph(title='Control signal u(t)', align='right',
-                            xtitle='Time(s)', fast=False,
+                            xtitle='Time(s)', fast=True,
                             xmin=0, xmax=self.graphs_xmax, height=440, width=800, scroll=False)
 
         # Curves
@@ -201,7 +202,7 @@ class DroneSimulation:
     def joystick_data_handler(self):
         for event in pygame.event.get():
             if event.type == pygame.JOYAXISMOTION:
-                # Horizontal axis on the right stick (performing roll)
+                # Horizontal axis on the right stick (performin= []g roll)
                 if event.axis == 3:
                     self.data_to_uav.phi_sp = scale_value(
                         event.value, *old_range, *new_range)
@@ -264,32 +265,41 @@ class DroneSimulation:
             if self.controllers_menu.selected == 'yaw':
                 controller_terms = [self.data_from_uav.yaw_proportional_term,
                                     self.data_from_uav.yaw_integral_term,
-                                    self.data_from_uav.yaw_derivative_term]
-                controller_pv = self.data_from_uav.psi
+                                    round(self.data_from_uav.yaw_derivative_term, 1)]
+                controller_sp = self.data_from_uav.psi
             elif self.controllers_menu.selected == 'pitch':
                 controller_terms = [self.data_from_uav.pitch_proportional_term,
                                     self.data_from_uav.pitch_integral_term,
-                                    self.data_from_uav.pitch_derivative_term]
-                controller_pv = self.data_from_uav.theta
+                                    round(self.data_from_uav.pitch_derivative_term, 1)]
+                controller_sp = self.data_from_uav.theta
             elif self.controllers_menu.selected == 'roll':
                 controller_terms = [self.data_from_uav.roll_proportional_term,
                                     self.data_from_uav.roll_integral_term,
-                                    self.data_from_uav.roll_derivative_term]
-                controller_pv = self.data_from_uav.phi
+                                    round(self.data_from_uav.roll_derivative_term, 1)]
+                controller_sp = self.data_from_uav.phi
             else:
                 raise RuntimeError('Invalid controller selected')
 
-            self.control_curve.plot(self.visualization_current_time,
-                                    sum(controller_terms))
-            self.proportional_term_curve.plot(
-                self.visualization_current_time, controller_terms[0])
-            self.integral_term_curve.plot(
-                self.visualization_current_time, controller_terms[1])
-            self.derivative_term_curve.plot(
-                self.visualization_current_time, controller_terms[2])
-            self.pv_curve.plot(self.visualization_current_time, controller_pv)
-            self.sp_curve.plot(self.visualization_current_time,
-                               self.selected_controller_object.sp)
+            if Decimal(str(round(self.visualization_current_time, 2))) % Decimal('0.1') == 0:
+                self.control_curve.plot(self.visualization_current_time,
+                                        sum(controller_terms))
+                self.proportional_term_curve.plot(
+                    self.visualization_current_time, controller_terms[0])
+                self.integral_term_curve.plot(
+                    self.visualization_current_time, controller_terms[1])
+                self.derivative_term_curve.plot(
+                    self.visualization_current_time, round(controller_terms[2], 2))
+                self.pv_curve.plot(self.visualization_current_time,
+                                   controller_sp)
+                self.sp_curve.plot(self.visualization_current_time,
+                                   self.selected_controller_object.sp)
+
+                self.sp_curve.data.pop(0)
+                self.pv_curve.data.pop(0)
+                self.control_curve.data.pop(0)
+                self.proportional_term_curve.data.pop(0)
+                self.integral_term_curve.data.pop(0)
+                self.derivative_term_curve.data.pop(0)
 
     def start(self):
         """Start the drone simulation."""
