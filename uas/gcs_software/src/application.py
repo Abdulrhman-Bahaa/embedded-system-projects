@@ -29,7 +29,7 @@ def application_initialize():
         "simulation": '/dev/tnt1',
         "arduino": '/dev/ttyACM0'
     }
-    BAUD_RATE = 57600
+    BAUD_RATE = 115200
     JOYSTICK_INPUT = False
 
     try:

@@ -21,48 +21,50 @@ Gcs::Gcs(Imu* imu, Motor* motors, PidController* yaw_controller, PidController* 
  */
 void
 Gcs::init() {
-    Serial.begin(57600);
+    Serial.begin(115200);
 }
 
 void
 Gcs::send() {
-    Serial.print("m,");
-    for (uint8_t i = 0; i < 3; i++) {
-        Serial.print(imu->euler_angles[i]);
+    if (Serial) {
+        Serial.print("m,");
+        for (uint8_t i = 0; i < 3; i++) {
+            Serial.print(imu->euler_angles[i]);
+            Serial.print(",");
+        }
+        for (uint8_t i = 0; i < 4; i++) {
+            Serial.print(motors[i].pwm_value);
+            Serial.print(",");
+        }
+        Serial.print(yaw_controller->proportional_term);
         Serial.print(",");
-    }
-    for (uint8_t i = 0; i < 4; i++) {
-        Serial.print(motors[i].pwm_value);
+        Serial.print(yaw_controller->integral_term);
         Serial.print(",");
+        Serial.print(yaw_controller->derivative_term);
+        Serial.print(",");
+        Serial.print(pitch_controller->proportional_term);
+        Serial.print(",");
+        Serial.print(pitch_controller->integral_term);
+        Serial.print(",");
+        Serial.print(pitch_controller->derivative_term);
+        Serial.print(",");
+        Serial.print(roll_controller->proportional_term);
+        Serial.print(",");
+        Serial.print(roll_controller->integral_term);
+        Serial.print(",");
+        Serial.print(roll_controller->derivative_term);
+        Serial.print(",");
+        Serial.print(0);
+        Serial.print(",");
+        Serial.print(0);
+        Serial.print(",");
+        Serial.println(0);
     }
-    Serial.print(yaw_controller->proportional_term);
-    Serial.print(",");
-    Serial.print(yaw_controller->integral_term);
-    Serial.print(",");
-    Serial.print(yaw_controller->derivative_term);
-    Serial.print(",");
-    Serial.print(pitch_controller->proportional_term);
-    Serial.print(",");
-    Serial.print(pitch_controller->integral_term);
-    Serial.print(",");
-    Serial.print(pitch_controller->derivative_term);
-    Serial.print(",");
-    Serial.print(roll_controller->proportional_term);
-    Serial.print(",");
-    Serial.print(roll_controller->integral_term);
-    Serial.print(",");
-    Serial.print(roll_controller->derivative_term);
-    Serial.print(",");
-    Serial.print(0);
-    Serial.print(",");
-    Serial.print(0);
-    Serial.print(",");
-    Serial.println(0);
 }
 
 void
 Gcs::receive() {
-    if (Serial.available() > 0) {
+    if (Serial && Serial.available() > 0) {
         String received_buffer = Serial.readStringUntil('\n'); //read received data
 
         if (received_buffer.length() > 30) {
