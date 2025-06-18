@@ -20,10 +20,6 @@ def scale_value(x, old_min, old_max, new_min, new_max):
     return ((x - old_min) / (old_max - old_min)) * (new_max - new_min) + new_min
 
 
-def do_nothing(evt):
-    pass
-
-
 # Classes ---------------------------------------------------------------------
 
 class DroneSimulation:
@@ -158,7 +154,7 @@ class DroneSimulation:
         for key in list(self.pid_winputs.keys())[0:4]:  # Exclude 'sp'
             self.wts.append(wtext(text=' ' + key + ' : ', id=inputs_number))
             self.pid_winputs[key] = winput(
-                bind=do_nothing, type='numeric', id=inputs_number)
+                bind=self.evt_handler, type='numeric', id=inputs_number)
             inputs_number = inputs_number + 1
 
         scene.append_to_caption(' ')
