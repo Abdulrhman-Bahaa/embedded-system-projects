@@ -80,36 +80,6 @@ QuadVista is a complete unmanned aerial system (UAS) platform featuring an embed
 
 ---
 
-## Repository Structure
-
-```
-uas/
-|-- README.md
-|-- gcs_software/
-|   |-- src/
-|   |   |-- application.py      # Main GCS entry point
-|   |   |-- gcs_ui.py          # Tkinter GUI components & layout
-|   |   |-- gcs_backend.py     # Data processing & state management
-|   |   |-- uav.py             # Serial communication & telemetry parser
-|
-|-- uav_firmware/
-    |-- include/
-    |   |-- application.hpp    # Main application declarations
-    |   |-- control.hpp        # PID controller & motor mixer interface
-    |   |-- gcs.hpp            # Serial protocol definitions
-    |   |-- imu.hpp            # MPU6050 sensor interface
-    |   |-- motors.hpp         # PWM/ESC control interface
-    |   |-- std_types.hpp      # Platform type definitions
-    |
-    |-- src/
-        |-- application.cpp    # Main firmware loop & state machine
-        |-- control.cpp        # PID implementation & motor mixing
-        |-- imu.cpp            # MPU6050 I2C driver & fusion filter
-        |-- motors.cpp         # PWM generation & ESC calibration
-        |-- gcs.cpp            # Telemetry framing & command parsing
-```
-
----
 
 ## Hardware Requirements
 
@@ -117,8 +87,7 @@ uas/
 |-----------|--------------|-----------|
 | **Microcontroller** | Arduino Uno/Mega, ESP32, or compatible | -- |
 | **IMU Sensor** | MPU6050 (6-axis accelerometer + gyroscope) | I2C |
-| **Motors** | Brushless DC x 4 | PWM via ESC |
-| **ESCs** | 30A+ Electronic Speed Controllers | PWM |
+| **Motors** | Coreless Motors DC x 4 | PWM via MOSFET |
 | **Communication** | USB-UART bridge or Bluetooth module | Serial |
 
 ---
@@ -171,62 +140,6 @@ python src/application.py
 | Motor 2 | PWM Pin 10 |
 | Motor 3 | PWM Pin 11 |
 | Motor 4 | PWM Pin 3 |
-
----
-
-## Operation Workflow
-
-```
-+---------------+     +------------------+     +------------------+
-|  Launch GCS   |---->| Select Serial    |---->|  Connect to UAV  |
-+---------------+     | Port             |     +------------------+
-                      +------------------+              |
-                                                        v
-                                               +------------------+
-                                               | Telemetry Stream |
-                                               | Active           |
-                                               +--------+---------+
-                                                        |
-                                                        v
-                                               +--------+---------+
-                                               |  User Action     |
-                                               +--------+---------+
-                                                        |
-                    +------------------+                |
-                    |                  |                |
-                    v                  v                v
-            +-------------+   +-------------+   +-------------+
-            |   Arm       |   |  PID Tune   |   |    Log      |
-            |   Motors    |   |  Update     |   |  Flight     |
-            |   Armed     |   |  Gains      |   |  Data       |
-            +------+------+   +------+------+   +------+------+
-                   |                 |                 |
-                   |                 |                 |
-                   v                 +--------+--------+
-            +-------------+                    |
-            | Flight      |                    v
-            | Operations  |           +--------+---------+
-            +------+------+           |                  |
-                   |                  |                  |
-                   v                  v                  v
-            +-------------+   +-------------+   +-------------+
-            | Disarm /    |   | Telemetry   |   | Telemetry   |
-            | Land        |   | Stream      |   | Stream      |
-            +-------------+   +-------------+   +-------------+
-```
-
----
-
-## Technology Stack
-
-| Layer | Technology |
-|-------|-----------|
-| **Firmware** | C++14, Embedded C |
-| **GCS Frontend** | Python 3, Tkinter |
-| **Visualization** | Matplotlib |
-| **Communication** | UART Serial Protocol |
-| **Sensor Fusion** | MPU6050 I2C Driver |
-| **Control Theory** | Discrete PID Implementation |
 
 ---
 
