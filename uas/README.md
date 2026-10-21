@@ -160,9 +160,3 @@ Please ensure your code follows the existing style and includes appropriate docu
 ## License
 
 Distributed under the MIT License. See [LICENSE](LICENSE) for more information.
-
----
-
-<div align="center">
-  <sub>Built with precision for autonomous flight systems.</sub>
-</div>
