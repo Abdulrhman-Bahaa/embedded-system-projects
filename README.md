@@ -99,69 +99,6 @@ A modular password authentication framework with hidden internal security logic.
 
 3. For firmware projects, open the respective directories in your preferred IDE and upload to your microcontroller.
 
-## Project Structure
-
-```
-embedded-system-projects/
-├── README.md
-├── images/
-├── uas/
-│   ├── README.md
-│   ├── gcs_software/
-│   │   └── src/
-│   │       ├── application.py
-│   │       ├── gcs_backend.py
-│   │       ├── gcs_ui.py
-│   │       └── uav.py
-│   └── uav_firmware/
-│       ├── include/
-│       │   ├── application.hpp
-│       │   ├── control.hpp
-│       │   ├── gcs.hpp
-│       │   ├── imu.hpp
-│       │   ├── motors.hpp
-│       │   └── std_types.hpp
-│       └── src/
-│           ├── application.cpp
-│           ├── control.cpp
-│           ├── gcs.cpp
-│           ├── imu.cpp
-│           └── motors.cpp
-├── oled_based_password_authenticator/
-│   ├── include/
-│   │   ├── oled_menu.h
-│   │   ├── pass_auth_system_config.h
-│   │   └── pass_auth_system_main.h
-│   └── src/
-│       ├── oled_menu.cpp
-│       ├── pass_auth_system_interfaces.cpp
-│       └── pass_auth_system_main.cpp
-└── shadow_auth/
-    ├── include/
-    │   └── pass_auth_system_main.h
-    └── src/
-        ├── pass_auth_system_interfaces.cpp
-        └── pass_auth_system_main.cpp
-```
-
-## Usage
-
-### UAS (QuadVista)
-1. Upload UAV firmware to your flight controller
-2. Run the GCS software: `python gcs_software/src/application.py`
-3. Connect to the UAV via serial communication
-4. Monitor telemetry and send commands through the UI
-
-### OLED Based Password Authenticator
-1. Upload the firmware to your microcontroller
-2. Connect OLED display, keypad, LEDs, and buzzer
-3. Power on the system and follow on-screen prompts
-4. Use keypad to enter passwords and navigate menus
-
-### ShadowAuth
-1. Include the ShadowAuth headers in your project
-2. Implement the required callback interfaces
-3. Integrate with your authentication logic
 
 ## Contributing
 
@@ -180,5 +117,3 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ## Contact
 
 Abdulrhman Bahaa - [GitHub Profile](https://github.com/Abdulrhman-Bahaa)
-
-Project Link: [https://github.com/Abdulrhman-Bahaa/embedded-systems-apps](https://github.com/Abdulrhman-Bahaa/embedded-systems-apps)
