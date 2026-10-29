@@ -1,0 +1,26 @@
+* ==================================================================
+* YONGYUTAI SI2300 (LCSC C2891729) -- SPICE model
+* N-Channel 20 V TrenchFET Power MOSFET, SOT-23-3L
+* Package pinout:  1 = GATE,  2 = SOURCE,  3 = DRAIN (marking "2300")
+*
+* Calibrated to datasheet TYPICAL curves at 25 degC:
+*   RDS(on) ~ 24 mOhm @ VGS=4.5 V   (datasheet graph ~ 25-30 mOhm)
+*   RDS(on) ~ 45 mOhm @ VGS=2.5 V   (datasheet graph ~ 40 mOhm)
+*   Vth      ~ 1.0 V
+*   Transfer curve: ~ 10 A @ VGS = 2.1 V (pulsed)
+*   Continuous rating class: ~ 4.5 A
+*
+* Model type: LEVEL=3  (ngspice / KiCad 10 / LTspice compatible)
+* NOTE: no avalanche breakdown is modeled -- respect VDS < 20 V.
+* ==================================================================
+.SUBCKT SI2300 D G S
+M1 D G S S SI2300CH W=1 L=1
+.MODEL SI2300CH NMOS (
++ LEVEL=3    VTO=1.0     KP=18        GAMMA=0    PHI=0.6
++ RS=0.004   RD=0.004    RDS=1G       TOX=50N
++ IS=1E-11   N=1.0
++ CGSO=50P   CGDO=50P    CGBO=10P
++ CJ=0.5M    MJ=0.5      CJSW=0.1N    MJSW=0.33
++ LAMBDA=0.05  THETA=0.02  KAPPA=0.5
++ )
+.ENDS SI2300
