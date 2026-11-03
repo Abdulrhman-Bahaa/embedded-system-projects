@@ -1,0 +1,228 @@
+(footprint "TS-3508"
+	(version 20260206)
+	(generator "pcbnew")
+	(generator_version "10.0")
+	(layer "F.Cu")
+	(descr "TS-3508 3.1x3.1x2mm SMD tactile switch; pad layout interpreted from supplier drawing")
+	(tags "TS-3508 tactile switch SMD 3.1mm")
+	(property "Reference" "SW**"
+		(at 0 -3 0)
+		(layer "F.SilkS")
+		(uuid "fa83e285-dd97-4daf-b5fb-8010bf347ad4")
+		(effects
+			(font
+				(size 0.8 0.8)
+				(thickness 0.12)
+			)
+		)
+	)
+	(property "Value" "TS-3508"
+		(at 0 3 0)
+		(layer "F.Fab")
+		(uuid "f8a02452-3433-4e90-87ea-9f5fc8c53571")
+		(effects
+			(font
+				(size 0.8 0.8)
+				(thickness 0.12)
+			)
+		)
+	)
+	(property "Datasheet" ""
+		(at 0 0 0)
+		(layer "F.Fab")
+		(hide yes)
+		(uuid "30a8e49e-f9e3-4adb-ae3e-3db8bd8a6855")
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+		)
+	)
+	(property "Description" ""
+		(at 0 0 0)
+		(layer "F.Fab")
+		(hide yes)
+		(uuid "cc0061cb-ceff-4948-82ab-43efda7b4622")
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+		)
+	)
+	(attr smd)
+	(duplicate_pad_numbers_are_jumpers no)
+	(fp_line
+		(start -1.7 -1.7)
+		(end 1.7 -1.7)
+		(stroke
+			(width 0.12)
+			(type default)
+		)
+		(layer "F.SilkS")
+		(uuid "f062603d-d547-4cca-a681-d1c84a1002a0")
+	)
+	(fp_line
+		(start -1.7 1.7)
+		(end -1.7 -1.7)
+		(stroke
+			(width 0.12)
+			(type default)
+		)
+		(layer "F.SilkS")
+		(uuid "dce2d8d8-89f5-4664-9e1f-d68e04114655")
+	)
+	(fp_line
+		(start 1.7 -1.7)
+		(end 1.7 1.7)
+		(stroke
+			(width 0.12)
+			(type default)
+		)
+		(layer "F.SilkS")
+		(uuid "d7a8143d-55e8-480f-9d4e-ec8856ef02bf")
+	)
+	(fp_line
+		(start 1.7 1.7)
+		(end -1.7 1.7)
+		(stroke
+			(width 0.12)
+			(type default)
+		)
+		(layer "F.SilkS")
+		(uuid "3d357b27-1a8f-4951-a9d8-a42c919bf4d7")
+	)
+	(fp_line
+		(start -1.75 -1.75)
+		(end 1.75 -1.75)
+		(stroke
+			(width 0.12)
+			(type default)
+		)
+		(layer "F.CrtYd")
+		(uuid "31bef1bd-5790-449f-b440-dbf58cf47570")
+	)
+	(fp_line
+		(start -1.75 1.75)
+		(end -1.75 -1.75)
+		(stroke
+			(width 0.12)
+			(type default)
+		)
+		(layer "F.CrtYd")
+		(uuid "360698cd-fdae-4dc7-8bcb-bb941e964712")
+	)
+	(fp_line
+		(start 1.75 -1.75)
+		(end 1.75 1.75)
+		(stroke
+			(width 0.12)
+			(type default)
+		)
+		(layer "F.CrtYd")
+		(uuid "60ce8310-48f1-4337-9418-46c853cd36ff")
+	)
+	(fp_line
+		(start 1.75 1.75)
+		(end -1.75 1.75)
+		(stroke
+			(width 0.12)
+			(type default)
+		)
+		(layer "F.CrtYd")
+		(uuid "c831cd73-ff7f-4a5f-bc6b-e3d3ab946244")
+	)
+	(fp_line
+		(start -1.55 -1.55)
+		(end 1.55 -1.55)
+		(stroke
+			(width 0.1)
+			(type default)
+		)
+		(layer "F.Fab")
+		(uuid "8eac3457-5f71-4a41-ad76-d56e9c7ffee3")
+	)
+	(fp_line
+		(start -1.55 1.55)
+		(end -1.55 -1.55)
+		(stroke
+			(width 0.1)
+			(type default)
+		)
+		(layer "F.Fab")
+		(uuid "594fb374-5e36-45be-8032-1cdc9b3d30fa")
+	)
+	(fp_line
+		(start 1.55 -1.55)
+		(end 1.55 1.55)
+		(stroke
+			(width 0.1)
+			(type default)
+		)
+		(layer "F.Fab")
+		(uuid "c56a3cd3-3f1e-49d8-8dcc-9ced0514d34c")
+	)
+	(fp_line
+		(start 1.55 1.55)
+		(end -1.55 1.55)
+		(stroke
+			(width 0.1)
+			(type default)
+		)
+		(layer "F.Fab")
+		(uuid "b5fcd80a-2407-4f26-8bf8-6e5a46c0fd2d")
+	)
+	(fp_text user "ACTUATOR"
+		(at 0 0 0)
+		(layer "F.Fab")
+		(uuid "c566d447-e548-4d22-8bd1-b154ec56af55")
+		(effects
+			(font
+				(size 0.35 0.35)
+				(thickness 0.06)
+			)
+		)
+	)
+	(pad "1" smd roundrect
+		(at -1.25 -0.7)
+		(size 0.75 0.7)
+		(layers "F.Cu" "F.Mask" "F.Paste")
+		(roundrect_rratio 0.15)
+		(uuid "51331248-ef3f-4bfb-9a70-1974f8c5a6f8")
+	)
+	(pad "2" smd roundrect
+		(at 1.25 -0.7)
+		(size 0.75 0.7)
+		(layers "F.Cu" "F.Mask" "F.Paste")
+		(roundrect_rratio 0.15)
+		(uuid "71740c8c-ac63-446c-b2e8-0bae1ff1822b")
+	)
+	(pad "3" smd roundrect
+		(at -1.25 0.7)
+		(size 0.75 0.7)
+		(layers "F.Cu" "F.Mask" "F.Paste")
+		(roundrect_rratio 0.15)
+		(uuid "a55dcd0e-da44-4ff6-8acb-b1ce28e33f49")
+	)
+	(pad "4" smd roundrect
+		(at 1.25 0.7)
+		(size 0.75 0.7)
+		(layers "F.Cu" "F.Mask" "F.Paste")
+		(roundrect_rratio 0.15)
+		(uuid "597081ef-2e94-4a85-b2a7-d2a09944c47c")
+	)
+	(pad "5" smd roundrect
+		(at 0 -1.5)
+		(size 0.7 0.35)
+		(layers "F.Cu" "F.Mask" "F.Paste")
+		(roundrect_rratio 0.15)
+		(uuid "ba7c5ca8-0eb6-4c32-830b-434b661bb97a")
+	)
+	(pad "6" smd roundrect
+		(at 0 1.5)
+		(size 0.7 0.35)
+		(layers "F.Cu" "F.Mask" "F.Paste")
+		(roundrect_rratio 0.15)
+		(uuid "f3b046d6-2e94-4a5b-87cb-c070253112c0")
+	)
+	(embedded_fonts no)
+)
