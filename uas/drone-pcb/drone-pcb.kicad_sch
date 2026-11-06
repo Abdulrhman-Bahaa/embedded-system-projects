@@ -2878,6 +2878,163 @@
 			)
 			(embedded_fonts no)
 		)
+		(symbol "Regulator_Linear:XC6206PxxxMR"
+			(pin_names
+				(offset 0.254)
+			)
+			(exclude_from_sim no)
+			(in_bom yes)
+			(on_board yes)
+			(in_pos_files yes)
+			(duplicate_pin_numbers_are_jumpers no)
+			(property "Reference" "U"
+				(at -3.81 3.175 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Value" "XC6206PxxxMR"
+				(at 0 3.175 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+					(justify left)
+				)
+			)
+			(property "Footprint" "Package_TO_SOT_SMD:SOT-23-3"
+				(at 0 5.715 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+						(italic yes)
+					)
+				)
+			)
+			(property "Datasheet" "https://www.torexsemi.com/file/xc6206/XC6206.pdf"
+				(at 0 0 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "Description" "Positive 60-250mA Low Dropout Regulator, Fixed Output, SOT-23"
+				(at 0 0 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "ki_keywords" "Torex LDO Voltage Regulator Fixed Positive"
+				(at 0 0 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(property "ki_fp_filters" "SOT?23?3*"
+				(at 0 0 0)
+				(show_name no)
+				(do_not_autoplace no)
+				(hide yes)
+				(effects
+					(font
+						(size 1.27 1.27)
+					)
+				)
+			)
+			(symbol "XC6206PxxxMR_0_1"
+				(rectangle
+					(start -5.08 1.905)
+					(end 5.08 -5.08)
+					(stroke
+						(width 0.254)
+						(type default)
+					)
+					(fill
+						(type background)
+					)
+				)
+			)
+			(symbol "XC6206PxxxMR_1_1"
+				(pin power_in line
+					(at 0 -7.62 90)
+					(length 2.54)
+					(name "GND"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "1"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin power_out line
+					(at 7.62 0 180)
+					(length 2.54)
+					(name "VO"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "2"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+				(pin power_in line
+					(at -7.62 0 0)
+					(length 2.54)
+					(name "VI"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+					(number "3"
+						(effects
+							(font
+								(size 1.27 1.27)
+							)
+						)
+					)
+				)
+			)
+			(embedded_fonts no)
+		)
 		(symbol "Switch:SW_Push"
 			(pin_numbers
 				(hide yes)
@@ -3826,6 +3983,12 @@
 		(uuid "34200818-4c60-4837-ae4a-3e33c0c0a92d")
 	)
 	(junction
+		(at 40.64 149.86)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "34446db9-f4c2-4bdd-b42e-8eca235a800f")
+	)
+	(junction
 		(at 255.27 90.17)
 		(diameter 0)
 		(color 0 0 0 0)
@@ -3902,6 +4065,12 @@
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "75c554d6-451f-4997-b66c-4cf648c3c3b7")
+	)
+	(junction
+		(at 57.15 149.86)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "7c856429-517e-4086-a06c-3c3f42f2d889")
 	)
 	(junction
 		(at 97.79 33.02)
@@ -3994,10 +4163,28 @@
 		(uuid "baf8f3e2-e928-489c-8012-bdd723efb2e1")
 	)
 	(junction
+		(at 68.58 138.43)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "bf150fe6-5ce7-4556-83b7-e86f353edc12")
+	)
+	(junction
 		(at 107.95 33.02)
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "c4c38548-7ff5-41fb-aa5e-5c60f3b4203c")
+	)
+	(junction
+		(at 40.64 138.43)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "c8914e08-e482-48ff-afe9-314428d69741")
+	)
+	(junction
+		(at 45.72 138.43)
+		(diameter 0)
+		(color 0 0 0 0)
+		(uuid "d4f4398e-ad67-4b71-a650-8d61c32673be")
 	)
 	(junction
 		(at 34.29 49.53)
@@ -4050,6 +4237,26 @@
 			(type default)
 		)
 		(uuid "097b886e-416b-4519-9b1d-f179afd0ba04")
+	)
+	(wire
+		(pts
+			(xy 40.64 138.43) (xy 40.64 140.97)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "0b49efbd-69d1-4939-8a3c-df36b4f47511")
+	)
+	(wire
+		(pts
+			(xy 57.15 149.86) (xy 57.15 152.4)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "0c1d1321-8a91-4d7c-a831-33f9a4ed9570")
 	)
 	(wire
 		(pts
@@ -4363,6 +4570,16 @@
 	)
 	(wire
 		(pts
+			(xy 68.58 138.43) (xy 73.66 138.43)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "4c254095-f8ad-4045-9f13-99d387471eab")
+	)
+	(wire
+		(pts
 			(xy 34.29 57.15) (xy 34.29 64.77)
 		)
 		(stroke
@@ -4473,6 +4690,16 @@
 	)
 	(wire
 		(pts
+			(xy 64.77 138.43) (xy 68.58 138.43)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "606dd8c6-c2aa-4292-aad6-f0b7ab470600")
+	)
+	(wire
+		(pts
 			(xy 248.92 87.63) (xy 255.27 87.63)
 		)
 		(stroke
@@ -4490,6 +4717,16 @@
 			(type default)
 		)
 		(uuid "61faa5ad-3879-44cb-98a0-be651e16207d")
+	)
+	(wire
+		(pts
+			(xy 34.29 138.43) (xy 49.53 138.43)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "635454ef-8b33-4230-af8a-915b8d267d7c")
 	)
 	(wire
 		(pts
@@ -4923,6 +5160,36 @@
 	)
 	(wire
 		(pts
+			(xy 34.29 140.97) (xy 34.29 149.86)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "ac837a8c-97d9-4796-a8fe-09e31b2387fe")
+	)
+	(wire
+		(pts
+			(xy 34.29 149.86) (xy 68.58 149.86)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "ae1d012f-e875-4283-bd5c-ef9a6f1554c8")
+	)
+	(wire
+		(pts
+			(xy 68.58 138.43) (xy 68.58 140.97)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "af63098f-ff97-45c1-9457-b4d0b13a8fa4")
+	)
+	(wire
+		(pts
 			(xy 198.12 53.34) (xy 198.12 60.96)
 		)
 		(stroke
@@ -5183,6 +5450,16 @@
 	)
 	(wire
 		(pts
+			(xy 57.15 149.86) (xy 57.15 146.05)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "e0d1b27d-a659-4039-b39d-aede67d751ed")
+	)
+	(wire
+		(pts
 			(xy 213.36 26.67) (xy 213.36 60.96)
 		)
 		(stroke
@@ -5273,6 +5550,16 @@
 	)
 	(wire
 		(pts
+			(xy 40.64 146.05) (xy 40.64 149.86)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "eea60594-d6d5-4c66-a550-5387392e3257")
+	)
+	(wire
+		(pts
 			(xy 198.12 39.37) (xy 198.12 43.18)
 		)
 		(stroke
@@ -5340,6 +5627,16 @@
 			(type default)
 		)
 		(uuid "fad13497-7b21-4889-8f78-d50122497412")
+	)
+	(wire
+		(pts
+			(xy 68.58 146.05) (xy 68.58 149.86)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "fd73aa85-7f9d-43c4-817e-bfe6c64ca361")
 	)
 	(wire
 		(pts
@@ -5603,7 +5900,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "0524e8bc-493b-4604-b802-fab4e9a13c0c")
-		(property "Reference" "J7"
+		(property "Reference" "J1"
 			(at 52.07 83.82 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -5683,7 +5980,7 @@
 		(instances
 			(project "drone-pcb"
 				(path "/54df3f00-8f9b-4e72-8fc4-dd91e4aae4ea"
-					(reference "J7")
+					(reference "J1")
 					(unit 1)
 				)
 			)
@@ -5701,7 +5998,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "05de511d-2eca-4750-bb42-5c463aea84d4")
-		(property "Reference" "Q2"
+		(property "Reference" "Q3"
 			(at 259.08 46.9899 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -5812,7 +6109,7 @@
 		(instances
 			(project "drone-pcb"
 				(path "/54df3f00-8f9b-4e72-8fc4-dd91e4aae4ea"
-					(reference "Q2")
+					(reference "Q3")
 					(unit 1)
 				)
 			)
@@ -5830,7 +6127,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "0d36e387-af10-4d28-a241-52c5463d3e5d")
-		(property "Reference" "J1"
+		(property "Reference" "J3"
 			(at 186.69 27.94 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -5892,7 +6189,7 @@
 		(instances
 			(project "drone-pcb"
 				(path "/54df3f00-8f9b-4e72-8fc4-dd91e4aae4ea"
-					(reference "J1")
+					(reference "J3")
 					(unit 1)
 				)
 			)
@@ -5910,7 +6207,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "21a20327-20fb-4a5c-939d-b25c80a88ffb")
-		(property "Reference" "#PWR015"
+		(property "Reference" "#PWR027"
 			(at 255.27 118.11 0)
 			(hide yes)
 			(show_name no)
@@ -5970,7 +6267,7 @@
 		(instances
 			(project "drone-pcb"
 				(path "/54df3f00-8f9b-4e72-8fc4-dd91e4aae4ea"
-					(reference "#PWR015")
+					(reference "#PWR027")
 					(unit 1)
 				)
 			)
@@ -6072,7 +6369,7 @@
 		(in_pos_files yes)
 		(dnp no)
 		(uuid "2aa00c55-2f79-4c88-9a6a-4b53259757a7")
-		(property "Reference" "R3"
+		(property "Reference" "R8"
 			(at 234.95 53.3399 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -6158,7 +6455,85 @@
 		(instances
 			(project "drone-pcb"
 				(path "/54df3f00-8f9b-4e72-8fc4-dd91e4aae4ea"
-					(reference "R3")
+					(reference "R8")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "power:+4V")
+		(at 45.72 138.43 0)
+		(unit 1)
+		(body_style 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(in_pos_files yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "2c4f8fc0-a127-4d92-b416-c269252fb17d")
+		(property "Reference" "#PWR031"
+			(at 45.72 142.24 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "+4V2"
+			(at 45.72 133.35 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 45.72 138.43 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" ""
+			(at 45.72 138.43 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"+4V\""
+			(at 45.72 138.43 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "1"
+			(uuid "d71c58ed-2a0b-488f-8c71-b676f4b80fe5")
+		)
+		(instances
+			(project "drone-pcb"
+				(path "/54df3f00-8f9b-4e72-8fc4-dd91e4aae4ea"
+					(reference "#PWR031")
 					(unit 1)
 				)
 			)
@@ -6176,7 +6551,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "2e6eb933-0daf-45c8-91f0-5f8c264d543e")
-		(property "Reference" "#PWR01"
+		(property "Reference" "#PWR014"
 			(at 175.26 67.31 0)
 			(hide yes)
 			(show_name no)
@@ -6236,7 +6611,89 @@
 		(instances
 			(project "drone-pcb"
 				(path "/54df3f00-8f9b-4e72-8fc4-dd91e4aae4ea"
-					(reference "#PWR01")
+					(reference "#PWR014")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "Device:C_Small")
+		(at 68.58 143.51 180)
+		(unit 1)
+		(body_style 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(in_pos_files yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "2e74e00c-3e5c-40ff-9f12-87fda9407c21")
+		(property "Reference" "C7"
+			(at 71.12 142.2399 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+		)
+		(property "Value" "1u"
+			(at 71.12 144.7799 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+		)
+		(property "Footprint" "Capacitor_SMD:C_0603_1608Metric"
+			(at 68.58 143.51 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" "https://makerselectronics.com/product/0603-multilayer-ceramic-capacitors-m/"
+			(at 68.58 143.51 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" "https://makerselectronics.com/product/0603-multilayer-ceramic-capacitors-m/"
+			(at 68.58 133.35 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "2"
+			(uuid "1636e450-cca5-4012-9684-321187954b4d")
+		)
+		(pin "1"
+			(uuid "262876cd-14e0-4a40-9746-3e8ba41fb23b")
+		)
+		(instances
+			(project "drone-pcb"
+				(path "/54df3f00-8f9b-4e72-8fc4-dd91e4aae4ea"
+					(reference "C7")
 					(unit 1)
 				)
 			)
@@ -6254,7 +6711,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "2eaaf5cf-4af7-4b72-a3d5-ef3589ae7024")
-		(property "Reference" "#PWR027"
+		(property "Reference" "#PWR03"
 			(at 26.67 96.52 0)
 			(hide yes)
 			(show_name no)
@@ -6314,7 +6771,7 @@
 		(instances
 			(project "drone-pcb"
 				(path "/54df3f00-8f9b-4e72-8fc4-dd91e4aae4ea"
-					(reference "#PWR027")
+					(reference "#PWR03")
 					(unit 1)
 				)
 			)
@@ -6332,7 +6789,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "33dc095a-03e1-47ac-8916-c78ecf330fc8")
-		(property "Reference" "#PWR018"
+		(property "Reference" "#PWR01"
 			(at 20.32 26.67 0)
 			(hide yes)
 			(show_name no)
@@ -6392,7 +6849,7 @@
 		(instances
 			(project "drone-pcb"
 				(path "/54df3f00-8f9b-4e72-8fc4-dd91e4aae4ea"
-					(reference "#PWR018")
+					(reference "#PWR01")
 					(unit 1)
 				)
 			)
@@ -6410,7 +6867,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "37e753a3-8a7e-4115-b946-2f1233f64e55")
-		(property "Reference" "U1"
+		(property "Reference" "U2"
 			(at 107.5533 129.54 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -6661,7 +7118,7 @@
 		(instances
 			(project "drone-pcb"
 				(path "/54df3f00-8f9b-4e72-8fc4-dd91e4aae4ea"
-					(reference "U1")
+					(reference "U2")
 					(unit 1)
 				)
 			)
@@ -6679,7 +7136,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "3ab6215a-f42d-4cc9-8725-a7aa3153c373")
-		(property "Reference" "D3"
+		(property "Reference" "D2"
 			(at 204.47 84.7724 90)
 			(show_name no)
 			(do_not_autoplace no)
@@ -6788,7 +7245,7 @@
 		(instances
 			(project "drone-pcb"
 				(path "/54df3f00-8f9b-4e72-8fc4-dd91e4aae4ea"
-					(reference "D3")
+					(reference "D2")
 					(unit 1)
 				)
 			)
@@ -6806,7 +7263,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "3bd9e4fc-3711-45ab-b0f9-ab9c6140632b")
-		(property "Reference" "R8"
+		(property "Reference" "R11"
 			(at 238.76 92.71 90)
 			(show_name no)
 			(do_not_autoplace no)
@@ -6890,7 +7347,7 @@
 		(instances
 			(project "drone-pcb"
 				(path "/54df3f00-8f9b-4e72-8fc4-dd91e4aae4ea"
-					(reference "R8")
+					(reference "R11")
 					(unit 1)
 				)
 			)
@@ -6908,7 +7365,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "3c9ffecb-3a2e-4b3e-8f0d-e899db4687e6")
-		(property "Reference" "#PWR028"
+		(property "Reference" "#PWR08"
 			(at 62.23 93.98 0)
 			(hide yes)
 			(show_name no)
@@ -6968,7 +7425,7 @@
 		(instances
 			(project "drone-pcb"
 				(path "/54df3f00-8f9b-4e72-8fc4-dd91e4aae4ea"
-					(reference "#PWR028")
+					(reference "#PWR08")
 					(unit 1)
 				)
 			)
@@ -6986,7 +7443,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "3ff6393e-8d4f-42f7-b7f2-4bff11da3c22")
-		(property "Reference" "#PWR022"
+		(property "Reference" "#PWR013"
 			(at 160.02 148.59 0)
 			(hide yes)
 			(show_name no)
@@ -7046,7 +7503,7 @@
 		(instances
 			(project "drone-pcb"
 				(path "/54df3f00-8f9b-4e72-8fc4-dd91e4aae4ea"
-					(reference "#PWR022")
+					(reference "#PWR013")
 					(unit 1)
 				)
 			)
@@ -7064,7 +7521,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "40b381b3-17ec-4089-9b4d-bef945e5362b")
-		(property "Reference" "#PWR023"
+		(property "Reference" "#PWR05"
 			(at 34.29 71.12 0)
 			(hide yes)
 			(show_name no)
@@ -7124,7 +7581,7 @@
 		(instances
 			(project "drone-pcb"
 				(path "/54df3f00-8f9b-4e72-8fc4-dd91e4aae4ea"
-					(reference "#PWR023")
+					(reference "#PWR05")
 					(unit 1)
 				)
 			)
@@ -7142,7 +7599,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "40fff549-3462-4a35-9de1-1a6729e56fb3")
-		(property "Reference" "D2"
+		(property "Reference" "D3"
 			(at 261.62 33.9724 90)
 			(show_name no)
 			(do_not_autoplace no)
@@ -7251,7 +7708,7 @@
 		(instances
 			(project "drone-pcb"
 				(path "/54df3f00-8f9b-4e72-8fc4-dd91e4aae4ea"
-					(reference "D2")
+					(reference "D3")
 					(unit 1)
 				)
 			)
@@ -7269,7 +7726,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "41bf4c96-a1c7-49af-bb43-aee986dc5191")
-		(property "Reference" "C2"
+		(property "Reference" "C9"
 			(at 67.31 44.45 90)
 			(show_name no)
 			(do_not_autoplace no)
@@ -7331,7 +7788,7 @@
 		(instances
 			(project "drone-pcb"
 				(path "/54df3f00-8f9b-4e72-8fc4-dd91e4aae4ea"
-					(reference "C2")
+					(reference "C9")
 					(unit 1)
 				)
 			)
@@ -7349,7 +7806,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "43bcf7a9-96b6-43ee-ad54-1bd808bf2f3d")
-		(property "Reference" "#PWR06"
+		(property "Reference" "#PWR024"
 			(at 255.27 29.21 0)
 			(hide yes)
 			(show_name no)
@@ -7409,7 +7866,91 @@
 		(instances
 			(project "drone-pcb"
 				(path "/54df3f00-8f9b-4e72-8fc4-dd91e4aae4ea"
-					(reference "#PWR06")
+					(reference "#PWR024")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "Regulator_Linear:XC6206PxxxMR")
+		(at 57.15 138.43 0)
+		(unit 1)
+		(body_style 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(in_pos_files yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "4936cb4a-a568-42d9-87c8-bbe951d09d73")
+		(property "Reference" "U1"
+			(at 57.15 132.08 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "XC6206PxxxMR"
+			(at 57.15 134.62 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" "Package_TO_SOT_SMD:SOT-23-3"
+			(at 57.15 132.715 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+					(italic yes)
+				)
+			)
+		)
+		(property "Datasheet" "https://makerselectronics.com/wp-content/uploads/2025/07/2408051436_GOODWORK-XC6206P332MR_C6430947-1.pdf"
+			(at 57.15 138.43 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" "https://makerselectronics.com/product/goodwork-xc6206p332mr-200ma-fixed-3-3v-positive-6-5v-sot-23-voltage-regulators-ldo-smd/"
+			(at 57.15 138.43 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "1"
+			(uuid "3aa6afac-eac5-4be1-b7e7-88834e9b5b15")
+		)
+		(pin "2"
+			(uuid "4ad96883-24e4-42de-a113-51156bcbb639")
+		)
+		(pin "3"
+			(uuid "0f5f2bb8-acb5-4bd7-a520-22823fed4e5d")
+		)
+		(instances
+			(project "drone-pcb"
+				(path "/54df3f00-8f9b-4e72-8fc4-dd91e4aae4ea"
+					(reference "U1")
 					(unit 1)
 				)
 			)
@@ -7427,7 +7968,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "4deb6479-981b-4c0b-92be-c8450361f4b6")
-		(property "Reference" "J5"
+		(property "Reference" "J2"
 			(at 171.45 153.6699 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -7509,7 +8050,7 @@
 		(instances
 			(project "drone-pcb"
 				(path "/54df3f00-8f9b-4e72-8fc4-dd91e4aae4ea"
-					(reference "J5")
+					(reference "J2")
 					(unit 1)
 				)
 			)
@@ -7527,7 +8068,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "5187c40f-b02d-4cc6-ada0-89a91d2a8395")
-		(property "Reference" "R2"
+		(property "Reference" "R6"
 			(at 181.61 41.91 90)
 			(show_name no)
 			(do_not_autoplace no)
@@ -7611,7 +8152,7 @@
 		(instances
 			(project "drone-pcb"
 				(path "/54df3f00-8f9b-4e72-8fc4-dd91e4aae4ea"
-					(reference "R2")
+					(reference "R6")
 					(unit 1)
 				)
 			)
@@ -7628,7 +8169,7 @@
 		(in_pos_files yes)
 		(dnp no)
 		(uuid "51bee4cc-dcb4-47d3-baba-47450f18048c")
-		(property "Reference" "R1"
+		(property "Reference" "R4"
 			(at 177.8 53.3399 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -7714,7 +8255,7 @@
 		(instances
 			(project "drone-pcb"
 				(path "/54df3f00-8f9b-4e72-8fc4-dd91e4aae4ea"
-					(reference "R1")
+					(reference "R4")
 					(unit 1)
 				)
 			)
@@ -7732,7 +8273,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "53b28f1b-6f37-4dbf-b516-920ead12c16d")
-		(property "Reference" "#PWR010"
+		(property "Reference" "#PWR018"
 			(at 198.12 80.01 0)
 			(hide yes)
 			(show_name no)
@@ -7792,7 +8333,7 @@
 		(instances
 			(project "drone-pcb"
 				(path "/54df3f00-8f9b-4e72-8fc4-dd91e4aae4ea"
-					(reference "#PWR010")
+					(reference "#PWR018")
 					(unit 1)
 				)
 			)
@@ -7810,7 +8351,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "56439ee7-a897-40c7-b7ad-e0f2b56b90f9")
-		(property "Reference" "#PWR04"
+		(property "Reference" "#PWR020"
 			(at 213.36 67.31 0)
 			(hide yes)
 			(show_name no)
@@ -7870,7 +8411,7 @@
 		(instances
 			(project "drone-pcb"
 				(path "/54df3f00-8f9b-4e72-8fc4-dd91e4aae4ea"
-					(reference "#PWR04")
+					(reference "#PWR020")
 					(unit 1)
 				)
 			)
@@ -8017,7 +8558,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "59bc124b-4fdc-4cd1-b35c-3b0614368da8")
-		(property "Reference" "J3"
+		(property "Reference" "J4"
 			(at 186.69 78.74 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -8079,7 +8620,7 @@
 		(instances
 			(project "drone-pcb"
 				(path "/54df3f00-8f9b-4e72-8fc4-dd91e4aae4ea"
-					(reference "J3")
+					(reference "J4")
 					(unit 1)
 				)
 			)
@@ -8226,7 +8767,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "5bf47e24-22fa-43b0-ac47-53913036ff71")
-		(property "Reference" "#PWR09"
+		(property "Reference" "#PWR015"
 			(at 175.26 118.11 0)
 			(hide yes)
 			(show_name no)
@@ -8286,7 +8827,7 @@
 		(instances
 			(project "drone-pcb"
 				(path "/54df3f00-8f9b-4e72-8fc4-dd91e4aae4ea"
-					(reference "#PWR09")
+					(reference "#PWR015")
 					(unit 1)
 				)
 			)
@@ -8303,7 +8844,7 @@
 		(in_pos_files yes)
 		(dnp no)
 		(uuid "61823be5-669c-4d3f-9c4f-e60334111213")
-		(property "Reference" "R7"
+		(property "Reference" "R9"
 			(at 234.95 104.1399 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -8389,7 +8930,7 @@
 		(instances
 			(project "drone-pcb"
 				(path "/54df3f00-8f9b-4e72-8fc4-dd91e4aae4ea"
-					(reference "R7")
+					(reference "R9")
 					(unit 1)
 				)
 			)
@@ -8407,7 +8948,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "62d7224e-5265-477b-a348-a982d2fb300a")
-		(property "Reference" "J2"
+		(property "Reference" "J5"
 			(at 243.84 27.94 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -8469,7 +9010,7 @@
 		(instances
 			(project "drone-pcb"
 				(path "/54df3f00-8f9b-4e72-8fc4-dd91e4aae4ea"
-					(reference "J2")
+					(reference "J5")
 					(unit 1)
 				)
 			)
@@ -8486,7 +9027,7 @@
 		(in_pos_files yes)
 		(dnp no)
 		(uuid "64740006-b754-4ed3-a54a-522d0f350c1d")
-		(property "Reference" "C3"
+		(property "Reference" "C10"
 			(at 67.31 61.976 90)
 			(show_name no)
 			(do_not_autoplace no)
@@ -8548,7 +9089,7 @@
 		(instances
 			(project "drone-pcb"
 				(path "/54df3f00-8f9b-4e72-8fc4-dd91e4aae4ea"
-					(reference "C3")
+					(reference "C10")
 					(unit 1)
 				)
 			)
@@ -8566,7 +9107,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "76859876-03dc-499f-a014-fa3dcd00ea49")
-		(property "Reference" "#PWR011"
+		(property "Reference" "#PWR019"
 			(at 198.12 118.11 0)
 			(hide yes)
 			(show_name no)
@@ -8626,7 +9167,7 @@
 		(instances
 			(project "drone-pcb"
 				(path "/54df3f00-8f9b-4e72-8fc4-dd91e4aae4ea"
-					(reference "#PWR011")
+					(reference "#PWR019")
 					(unit 1)
 				)
 			)
@@ -8644,7 +9185,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "8153087c-518d-485d-9bee-152856bd690c")
-		(property "Reference" "R4"
+		(property "Reference" "R10"
 			(at 238.76 41.91 90)
 			(show_name no)
 			(do_not_autoplace no)
@@ -8728,7 +9269,7 @@
 		(instances
 			(project "drone-pcb"
 				(path "/54df3f00-8f9b-4e72-8fc4-dd91e4aae4ea"
-					(reference "R4")
+					(reference "R10")
 					(unit 1)
 				)
 			)
@@ -8746,7 +9287,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "83063800-97df-44fa-b3d0-3b1bc7ca4e58")
-		(property "Reference" "Q3"
+		(property "Reference" "Q2"
 			(at 201.93 97.7899 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -8857,7 +9398,7 @@
 		(instances
 			(project "drone-pcb"
 				(path "/54df3f00-8f9b-4e72-8fc4-dd91e4aae4ea"
-					(reference "Q3")
+					(reference "Q2")
 					(unit 1)
 				)
 			)
@@ -8875,7 +9416,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "84202067-ce3b-47fd-b3b2-7712c3c24a7a")
-		(property "Reference" "C9"
+		(property "Reference" "C11"
 			(at 74.93 27.9399 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -8939,7 +9480,7 @@
 		(instances
 			(project "drone-pcb"
 				(path "/54df3f00-8f9b-4e72-8fc4-dd91e4aae4ea"
-					(reference "C9")
+					(reference "C11")
 					(unit 1)
 				)
 			)
@@ -8957,7 +9498,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "8aef76e0-3089-48df-8d5b-3acdcabe2bc0")
-		(property "Reference" "#PWR017"
+		(property "Reference" "#PWR07"
 			(at 60.96 62.23 0)
 			(hide yes)
 			(show_name no)
@@ -9017,7 +9558,7 @@
 		(instances
 			(project "drone-pcb"
 				(path "/54df3f00-8f9b-4e72-8fc4-dd91e4aae4ea"
-					(reference "#PWR017")
+					(reference "#PWR07")
 					(unit 1)
 				)
 			)
@@ -9034,7 +9575,7 @@
 		(in_pos_files yes)
 		(dnp no)
 		(uuid "8edfc2fd-1849-4442-8289-d84ac960f5fb")
-		(property "Reference" "#PWR025"
+		(property "Reference" "#PWR011"
 			(at 144.78 86.36 0)
 			(hide yes)
 			(show_name no)
@@ -9094,7 +9635,7 @@
 		(instances
 			(project "drone-pcb"
 				(path "/54df3f00-8f9b-4e72-8fc4-dd91e4aae4ea"
-					(reference "#PWR025")
+					(reference "#PWR011")
 					(unit 1)
 				)
 			)
@@ -9112,7 +9653,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "914d496f-e4a4-4d11-a8a0-57ba76b4203e")
-		(property "Reference" "#PWR02"
+		(property "Reference" "#PWR016"
 			(at 198.12 29.21 0)
 			(hide yes)
 			(show_name no)
@@ -9172,7 +9713,7 @@
 		(instances
 			(project "drone-pcb"
 				(path "/54df3f00-8f9b-4e72-8fc4-dd91e4aae4ea"
-					(reference "#PWR02")
+					(reference "#PWR016")
 					(unit 1)
 				)
 			)
@@ -9190,7 +9731,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "9279e341-be5d-4ea2-bf15-7c0c3ca79a6e")
-		(property "Reference" "#PWR013"
+		(property "Reference" "#PWR023"
 			(at 232.41 118.11 0)
 			(hide yes)
 			(show_name no)
@@ -9250,7 +9791,7 @@
 		(instances
 			(project "drone-pcb"
 				(path "/54df3f00-8f9b-4e72-8fc4-dd91e4aae4ea"
-					(reference "#PWR013")
+					(reference "#PWR023")
 					(unit 1)
 				)
 			)
@@ -9268,7 +9809,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "93583889-b19c-4624-8d9f-8cd583e1c6e9")
-		(property "Reference" "#PWR016"
+		(property "Reference" "#PWR029"
 			(at 270.51 118.11 0)
 			(hide yes)
 			(show_name no)
@@ -9328,7 +9869,7 @@
 		(instances
 			(project "drone-pcb"
 				(path "/54df3f00-8f9b-4e72-8fc4-dd91e4aae4ea"
-					(reference "#PWR016")
+					(reference "#PWR029")
 					(unit 1)
 				)
 			)
@@ -9346,7 +9887,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "94801951-d60b-4ec7-b792-12713aa4e6bc")
-		(property "Reference" "J4"
+		(property "Reference" "J6"
 			(at 243.84 78.74 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -9408,7 +9949,7 @@
 		(instances
 			(project "drone-pcb"
 				(path "/54df3f00-8f9b-4e72-8fc4-dd91e4aae4ea"
-					(reference "J4")
+					(reference "J6")
 					(unit 1)
 				)
 			)
@@ -9426,7 +9967,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "94d01d73-a5ac-4ce3-a230-08ef0ada4fa7")
-		(property "Reference" "#PWR05"
+		(property "Reference" "#PWR022"
 			(at 232.41 67.31 0)
 			(hide yes)
 			(show_name no)
@@ -9486,7 +10027,7 @@
 		(instances
 			(project "drone-pcb"
 				(path "/54df3f00-8f9b-4e72-8fc4-dd91e4aae4ea"
-					(reference "#PWR05")
+					(reference "#PWR022")
 					(unit 1)
 				)
 			)
@@ -9504,7 +10045,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "9a768d5b-0794-466a-8145-cfbe2f483faa")
-		(property "Reference" "#PWR021"
+		(property "Reference" "#PWR04"
 			(at 34.29 45.72 0)
 			(hide yes)
 			(show_name no)
@@ -9564,7 +10105,7 @@
 		(instances
 			(project "drone-pcb"
 				(path "/54df3f00-8f9b-4e72-8fc4-dd91e4aae4ea"
-					(reference "#PWR021")
+					(reference "#PWR04")
 					(unit 1)
 				)
 			)
@@ -9582,7 +10123,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "a28030d5-bc4a-498f-b437-695c1fc73d85")
-		(property "Reference" "R6"
+		(property "Reference" "R7"
 			(at 181.61 92.71 90)
 			(show_name no)
 			(do_not_autoplace no)
@@ -9666,7 +10207,7 @@
 		(instances
 			(project "drone-pcb"
 				(path "/54df3f00-8f9b-4e72-8fc4-dd91e4aae4ea"
-					(reference "R6")
+					(reference "R7")
 					(unit 1)
 				)
 			)
@@ -9684,7 +10225,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "a677541a-4675-4ee6-8454-4db0c27b84d1")
-		(property "Reference" "#PWR03"
+		(property "Reference" "#PWR017"
 			(at 198.12 67.31 0)
 			(hide yes)
 			(show_name no)
@@ -9744,7 +10285,7 @@
 		(instances
 			(project "drone-pcb"
 				(path "/54df3f00-8f9b-4e72-8fc4-dd91e4aae4ea"
-					(reference "#PWR03")
+					(reference "#PWR017")
 					(unit 1)
 				)
 			)
@@ -9761,7 +10302,7 @@
 		(in_pos_files yes)
 		(dnp no)
 		(uuid "ab0ea286-9f1f-4e46-af3a-85ced7fb7d92")
-		(property "Reference" "R11"
+		(property "Reference" "R2"
 			(at 134.62 93.9799 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -9847,7 +10388,7 @@
 		(instances
 			(project "drone-pcb"
 				(path "/54df3f00-8f9b-4e72-8fc4-dd91e4aae4ea"
-					(reference "R11")
+					(reference "R2")
 					(unit 1)
 				)
 			)
@@ -9968,7 +10509,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "bde07fdf-b79e-45b1-b9e9-aae72780b7c0")
-		(property "Reference" "C4"
+		(property "Reference" "C2"
 			(at 35.56 27.9399 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -10032,7 +10573,7 @@
 		(instances
 			(project "drone-pcb"
 				(path "/54df3f00-8f9b-4e72-8fc4-dd91e4aae4ea"
-					(reference "C4")
+					(reference "C2")
 					(unit 1)
 				)
 			)
@@ -10050,7 +10591,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "c0924585-ffa0-4655-b459-b4ef7984f632")
-		(property "Reference" "#PWR014"
+		(property "Reference" "#PWR026"
 			(at 255.27 80.01 0)
 			(hide yes)
 			(show_name no)
@@ -10110,7 +10651,7 @@
 		(instances
 			(project "drone-pcb"
 				(path "/54df3f00-8f9b-4e72-8fc4-dd91e4aae4ea"
-					(reference "#PWR014")
+					(reference "#PWR026")
 					(unit 1)
 				)
 			)
@@ -10209,7 +10750,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "c5c812f0-4b03-43fd-9a99-b51ee8dfd5f2")
-		(property "Reference" "#PWR024"
+		(property "Reference" "#PWR012"
 			(at 151.13 167.64 0)
 			(hide yes)
 			(show_name no)
@@ -10269,7 +10810,7 @@
 		(instances
 			(project "drone-pcb"
 				(path "/54df3f00-8f9b-4e72-8fc4-dd91e4aae4ea"
-					(reference "#PWR024")
+					(reference "#PWR012")
 					(unit 1)
 				)
 			)
@@ -10287,7 +10828,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "caa08959-7731-40ca-8dcb-3b187e18ea69")
-		(property "Reference" "#PWR019"
+		(property "Reference" "#PWR09"
 			(at 96.52 139.7 0)
 			(hide yes)
 			(show_name no)
@@ -10347,7 +10888,85 @@
 		(instances
 			(project "drone-pcb"
 				(path "/54df3f00-8f9b-4e72-8fc4-dd91e4aae4ea"
-					(reference "#PWR019")
+					(reference "#PWR09")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "power:GND")
+		(at 57.15 152.4 0)
+		(unit 1)
+		(body_style 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(in_pos_files yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "ccf22caa-d21c-46d7-9ecf-ec1b22a29081")
+		(property "Reference" "#PWR06"
+			(at 57.15 158.75 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "GND"
+			(at 57.15 157.48 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 57.15 152.4 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" ""
+			(at 57.15 152.4 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"GND\" , ground"
+			(at 57.15 152.4 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "1"
+			(uuid "37d0a275-3273-4f65-8643-40c03c920e81")
+		)
+		(instances
+			(project "drone-pcb"
+				(path "/54df3f00-8f9b-4e72-8fc4-dd91e4aae4ea"
+					(reference "#PWR06")
 					(unit 1)
 				)
 			)
@@ -10365,7 +10984,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "d266cc54-d703-423e-b84a-cfdceddd4244")
-		(property "Reference" "C10"
+		(property "Reference" "C12"
 			(at 85.09 27.9399 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -10429,7 +11048,7 @@
 		(instances
 			(project "drone-pcb"
 				(path "/54df3f00-8f9b-4e72-8fc4-dd91e4aae4ea"
-					(reference "C10")
+					(reference "C12")
 					(unit 1)
 				)
 			)
@@ -10447,7 +11066,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "d9cec392-3a9e-4eec-b158-7168f7435407")
-		(property "Reference" "#PWR020"
+		(property "Reference" "#PWR02"
 			(at 20.32 41.91 0)
 			(hide yes)
 			(show_name no)
@@ -10507,7 +11126,7 @@
 		(instances
 			(project "drone-pcb"
 				(path "/54df3f00-8f9b-4e72-8fc4-dd91e4aae4ea"
-					(reference "#PWR020")
+					(reference "#PWR02")
 					(unit 1)
 				)
 			)
@@ -10525,7 +11144,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "daca5179-0139-45ca-8284-3a0e38906c2c")
-		(property "Reference" "#PWR08"
+		(property "Reference" "#PWR028"
 			(at 270.51 67.31 0)
 			(hide yes)
 			(show_name no)
@@ -10585,7 +11204,7 @@
 		(instances
 			(project "drone-pcb"
 				(path "/54df3f00-8f9b-4e72-8fc4-dd91e4aae4ea"
-					(reference "#PWR08")
+					(reference "#PWR028")
 					(unit 1)
 				)
 			)
@@ -10602,7 +11221,7 @@
 		(in_pos_files yes)
 		(dnp no)
 		(uuid "de0a2a90-a593-4e96-ba26-be6a951e2631")
-		(property "Reference" "R9"
+		(property "Reference" "R1"
 			(at 36.83 44.4499 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -10688,7 +11307,7 @@
 		(instances
 			(project "drone-pcb"
 				(path "/54df3f00-8f9b-4e72-8fc4-dd91e4aae4ea"
-					(reference "R9")
+					(reference "R1")
 					(unit 1)
 				)
 			)
@@ -10788,7 +11407,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "e08845b0-6939-41b1-9f9c-624af5eb0c4e")
-		(property "Reference" "#PWR012"
+		(property "Reference" "#PWR021"
 			(at 213.36 118.11 0)
 			(hide yes)
 			(show_name no)
@@ -10848,7 +11467,85 @@
 		(instances
 			(project "drone-pcb"
 				(path "/54df3f00-8f9b-4e72-8fc4-dd91e4aae4ea"
-					(reference "#PWR012")
+					(reference "#PWR021")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "power:+3.3V")
+		(at 73.66 138.43 0)
+		(unit 1)
+		(body_style 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(in_pos_files yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "e0f2113a-597d-4956-b5d9-b0f8c5409442")
+		(property "Reference" "#PWR030"
+			(at 73.66 142.24 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "+3.3V"
+			(at 73.66 133.35 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" ""
+			(at 73.66 138.43 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" ""
+			(at 73.66 138.43 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" "Power symbol creates a global label with name \"+3.3V\""
+			(at 73.66 138.43 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "1"
+			(uuid "b0a0d7c8-edfc-409b-b5f5-9014c7c9c609")
+		)
+		(instances
+			(project "drone-pcb"
+				(path "/54df3f00-8f9b-4e72-8fc4-dd91e4aae4ea"
+					(reference "#PWR030")
 					(unit 1)
 				)
 			)
@@ -10866,7 +11563,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "e48f769e-f70a-49e5-85fe-5f93b64af875")
-		(property "Reference" "#PWR026"
+		(property "Reference" "#PWR010"
 			(at 132.08 95.25 0)
 			(hide yes)
 			(show_name no)
@@ -10926,7 +11623,7 @@
 		(instances
 			(project "drone-pcb"
 				(path "/54df3f00-8f9b-4e72-8fc4-dd91e4aae4ea"
-					(reference "#PWR026")
+					(reference "#PWR010")
 					(unit 1)
 				)
 			)
@@ -10944,7 +11641,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "e891c4d7-4fb7-4301-89d0-9853295ef982")
-		(property "Reference" "#PWR07"
+		(property "Reference" "#PWR025"
 			(at 255.27 67.31 0)
 			(hide yes)
 			(show_name no)
@@ -11004,7 +11701,7 @@
 		(instances
 			(project "drone-pcb"
 				(path "/54df3f00-8f9b-4e72-8fc4-dd91e4aae4ea"
-					(reference "#PWR07")
+					(reference "#PWR025")
 					(unit 1)
 				)
 			)
@@ -11022,7 +11719,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "e9e25e14-157c-44f7-8cf2-fb0653ce21c6")
-		(property "Reference" "C7"
+		(property "Reference" "C8"
 			(at 64.77 27.9399 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -11086,7 +11783,7 @@
 		(instances
 			(project "drone-pcb"
 				(path "/54df3f00-8f9b-4e72-8fc4-dd91e4aae4ea"
-					(reference "C7")
+					(reference "C8")
 					(unit 1)
 				)
 			)
@@ -11214,6 +11911,88 @@
 			(project "drone-pcb"
 				(path "/54df3f00-8f9b-4e72-8fc4-dd91e4aae4ea"
 					(reference "D4")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "Device:C_Small")
+		(at 40.64 143.51 180)
+		(unit 1)
+		(body_style 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(in_pos_files yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "ed7b9708-f70a-49ec-aa19-c3597648e7cb")
+		(property "Reference" "C4"
+			(at 43.18 142.2399 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+		)
+		(property "Value" "1u"
+			(at 43.18 144.7799 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+				(justify right)
+			)
+		)
+		(property "Footprint" "Capacitor_SMD:C_0603_1608Metric"
+			(at 40.64 143.51 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" "https://makerselectronics.com/product/0603-multilayer-ceramic-capacitors-m/"
+			(at 40.64 143.51 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" "Unpolarized capacitor, small symbol"
+			(at 40.64 133.35 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "2"
+			(uuid "3de03c28-6644-4061-bcf6-53d28e7d7347")
+		)
+		(pin "1"
+			(uuid "958e74ca-6689-4195-b55d-e7fc2dfea622")
+		)
+		(instances
+			(project "drone-pcb"
+				(path "/54df3f00-8f9b-4e72-8fc4-dd91e4aae4ea"
+					(reference "C4")
 					(unit 1)
 				)
 			)
@@ -11439,7 +12218,7 @@
 		(in_pos_files yes)
 		(dnp no)
 		(uuid "f4511d37-c326-40eb-b461-67b697b4a3ce")
-		(property "Reference" "R12"
+		(property "Reference" "R3"
 			(at 147.32 85.0899 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -11525,7 +12304,87 @@
 		(instances
 			(project "drone-pcb"
 				(path "/54df3f00-8f9b-4e72-8fc4-dd91e4aae4ea"
-					(reference "R12")
+					(reference "R3")
+					(unit 1)
+				)
+			)
+		)
+	)
+	(symbol
+		(lib_id "Connector_Generic:Conn_01x02")
+		(at 29.21 140.97 180)
+		(unit 1)
+		(body_style 1)
+		(exclude_from_sim no)
+		(in_bom yes)
+		(on_board yes)
+		(in_pos_files yes)
+		(dnp no)
+		(fields_autoplaced yes)
+		(uuid "f526b19e-58e1-4469-93b3-1baa3ea705bb")
+		(property "Reference" "J7"
+			(at 29.21 132.08 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Value" "Conn_01x02"
+			(at 29.21 134.62 0)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Footprint" "Resistor_SMD:R_0805_2012Metric"
+			(at 29.21 140.97 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Datasheet" ""
+			(at 29.21 140.97 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(property "Description" "Generic connector, single row, 01x02, script generated (kicad-library-utils/schlib/autogen/connector/)"
+			(at 29.21 140.97 0)
+			(hide yes)
+			(show_name no)
+			(do_not_autoplace no)
+			(effects
+				(font
+					(size 1.27 1.27)
+				)
+			)
+		)
+		(pin "2"
+			(uuid "f8318044-87b7-457b-8ef8-8a845e65b04b")
+		)
+		(pin "1"
+			(uuid "b111e40a-c0dc-4d8e-8dba-3a4889726b0d")
+		)
+		(instances
+			(project "drone-pcb"
+				(path "/54df3f00-8f9b-4e72-8fc4-dd91e4aae4ea"
+					(reference "J7")
 					(unit 1)
 				)
 			)
@@ -11543,7 +12402,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "fa3d86f9-66e2-42a4-a91d-e6968f8d337a")
-		(property "Reference" "C8"
+		(property "Reference" "C1"
 			(at 22.86 27.9399 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -11607,7 +12466,7 @@
 		(instances
 			(project "drone-pcb"
 				(path "/54df3f00-8f9b-4e72-8fc4-dd91e4aae4ea"
-					(reference "C8")
+					(reference "C1")
 					(unit 1)
 				)
 			)
@@ -11625,7 +12484,7 @@
 		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "ff7821e7-3e21-444c-b435-fd64283d217b")
-		(property "Reference" "C11"
+		(property "Reference" "C3"
 			(at 36.83 53.3399 0)
 			(show_name no)
 			(do_not_autoplace no)
@@ -11689,7 +12548,7 @@
 		(instances
 			(project "drone-pcb"
 				(path "/54df3f00-8f9b-4e72-8fc4-dd91e4aae4ea"
-					(reference "C11")
+					(reference "C3")
 					(unit 1)
 				)
 			)
