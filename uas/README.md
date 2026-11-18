@@ -9,9 +9,13 @@
 **Embedded Flight Controller & Ground Station Platform for Unmanned Aerial Systems**
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
 [![Platform](https://img.shields.io/badge/Platform-Arduino%20%7C%20ESP32-blue)](https://www.arduino.cc/)
+
 [![Python](https://img.shields.io/badge/Python-3.x-green.svg)](https://www.python.org/)
+
 [![Serial](https://img.shields.io/badge/Protocol-Serial-orange.svg)]()
+
 [![IMU](https://img.shields.io/badge/IMU-MPU6050-red.svg)]()
 
 </div>
@@ -25,6 +29,7 @@ QuadVista is a complete unmanned aerial system (UAS) platform featuring an embed
 ## Features
 
 ### UAV Firmware
+
 | Feature | Description |
 |---------|-------------|
 | **PID Control** | Proportional-integral-derivative controller for flight stability and attitude hold |
@@ -33,6 +38,7 @@ QuadVista is a complete unmanned aerial system (UAS) platform featuring an embed
 | **Telemetry** | Serial interface for real-time telemetry streaming and command exchange |
 
 ### Ground Control Station
+
 | Feature | Description |
 |---------|-------------|
 | **Live Telemetry** | Real-time dashboard for altitude, orientation, and motor status |
@@ -40,46 +46,13 @@ QuadVista is a complete unmanned aerial system (UAS) platform featuring an embed
 | **Data Visualization** | Graphical flight data display with system health indicators |
 | **Flight Logging** | Persistent recording of flight parameters for post-mission analysis |
 
----
+## Flight Controller PCB
 
-## System Architecture
-
-```
-+-------------------------------------------------------------+
-|                    QUADVISTA PLATFORM                       |
-+-----------------------------+-------------------------------+
-|      UAV Firmware (C++)     |      GCS Software (Python)    |
-|      -----------------      |      -------------------      |
-|                             |                               |
-|  +-------------+           |   +---------------------+     |
-|  | application |           |   |   application.py    |     |
-|  |   .cpp      |<----------+-->|   (Main Entry)      |     |
-|  +------+------+           |   +---------------------+     |
-|         |                   |            |                  |
-|  +------+------+           |   +--------+----------------+  |
-|  |  control.cpp|           |   |   gcs_ui.py              | |
-|  |  (PID/Motor)|           |   |   (Tkinter GUI)          | |
-|  +------+------+           |   +-------------------------+  |
-|         |                   |            |                   |
-|  +------+------+           |   +--------+----------------+  |
-|  |   imu.cpp   |           |   |  gcs_backend.py          | |
-|  | (MPU6050)   |           |   |  (Data Processing)       | |
-|  +-------------+           |   +-------------------------+  |
-|                            |            |                   |
-|  +-------------+           |   +--------+----------------+  |
-|  |  motors.cpp |           |   |     uav.py              |  |
-|  |  (PWM/ESC)  |           |   | (Serial Comms)          |  |
-|  +-------------+           |   +-------------------------+  |
-|                            |                                |
-|  +-------------+           |                                |
-|  |   gcs.cpp   |<---------+-------------------------------+ |
-|  |  (Serial)   |  UART/USB                                 |
-|  +-------------+           |
-+----------------------------+
-```
+<p align="center">
+  <img src="/images/pcb.png" alt="Flight Controller PCB" width="80%">
+</p>
 
 ---
-
 
 ## Hardware Requirements
 
@@ -95,11 +68,13 @@ QuadVista is a complete unmanned aerial system (UAS) platform featuring an embed
 ## Software Prerequisites
 
 ### Firmware Development
+
 - [Arduino IDE](https://www.arduino.cc/en/software) (>=1.8.x) or [PlatformIO](https://platformio.org/)
 - Wire library (built-in)
 - Optional: [MPU6050 library by jrowberg](https://github.com/jrowberg/i2cdevlib)
 
 ### Ground Station
+
 ```bash
 # Python 3.7+ required
 pip install pyserial tkinter matplotlib
@@ -110,6 +85,7 @@ pip install pyserial tkinter matplotlib
 ## Quick Start
 
 ### 1. Flash UAV Firmware
+
 ```bash
 cd uav_firmware
 # Open in Arduino IDE or PlatformIO
@@ -117,6 +93,7 @@ cd uav_firmware
 ```
 
 ### 2. Launch Ground Station
+
 ```bash
 cd gcs_software
 pip install pyserial tkinter matplotlib
@@ -126,6 +103,7 @@ python src/application.py
 ### 3. Hardware Wiring
 
 #### MPU6050 to Microcontroller
+
 | MPU6050 | Microcontroller |
 |---------|----------------|
 | VCC | 3.3V / 5V |
@@ -133,13 +111,14 @@ python src/application.py
 | SCL | SCL (A5 on Uno) |
 | SDA | SDA (A4 on Uno) |
 
-#### ESC Signal to Microcontroller
-| ESC Signal | Microcontroller |
-|------------|----------------|
-| Motor 1 | PWM Pin 9 |
-| Motor 2 | PWM Pin 10 |
-| Motor 3 | PWM Pin 11 |
-| Motor 4 | PWM Pin 3 |
+#### PWM Signal to Microcontroller
+
+| PWM Signal | Microcontroller |
+| ---------- | --------------- |
+| Motor 1    | PWM Pin 9       |
+| Motor 2    | PWM Pin 10      |
+| Motor 3    | PWM Pin 11      |
+| Motor 4    | PWM Pin 3       |
 
 ---
 
