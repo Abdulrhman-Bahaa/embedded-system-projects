@@ -5184,7 +5184,7 @@
 		(uuid "c8914e08-e482-48ff-afe9-314428d69741")
 	)
 	(junction
-		(at 49.53 160.02)
+		(at 41.91 160.02)
 		(diameter 0)
 		(color 0 0 0 0)
 		(uuid "d4f4398e-ad67-4b71-a650-8d61c32673be")
@@ -6312,6 +6312,16 @@
 			(type default)
 		)
 		(uuid "9e6b48f9-a84c-4a8b-ac41-ecec39b86a5d")
+	)
+	(wire
+		(pts
+			(xy 41.91 156.21) (xy 41.91 160.02)
+		)
+		(stroke
+			(width 0)
+			(type default)
+		)
+		(uuid "a008f6ea-a131-4346-869b-ba286adff530")
 	)
 	(wire
 		(pts
@@ -8056,7 +8066,7 @@
 	)
 	(symbol
 		(lib_id "power:+4V")
-		(at 49.53 160.02 0)
+		(at 41.91 156.21 0)
 		(unit 1)
 		(body_style 1)
 		(exclude_from_sim no)
@@ -8067,7 +8077,7 @@
 		(fields_autoplaced yes)
 		(uuid "2c4f8fc0-a127-4d92-b416-c269252fb17d")
 		(property "Reference" "#PWR031"
-			(at 49.53 163.83 0)
+			(at 41.91 160.02 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -8078,7 +8088,7 @@
 			)
 		)
 		(property "Value" "+4V2"
-			(at 49.53 154.94 0)
+			(at 41.91 151.13 0)
 			(show_name no)
 			(do_not_autoplace no)
 			(effects
@@ -8088,7 +8098,7 @@
 			)
 		)
 		(property "Footprint" ""
-			(at 49.53 160.02 0)
+			(at 41.91 156.21 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -8099,7 +8109,7 @@
 			)
 		)
 		(property "Datasheet" ""
-			(at 49.53 160.02 0)
+			(at 41.91 156.21 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
@@ -8110,7 +8120,7 @@
 			)
 		)
 		(property "Description" "Power symbol creates a global label with name \"+4V\""
-			(at 49.53 160.02 0)
+			(at 41.91 156.21 0)
 			(hide yes)
 			(show_name no)
 			(do_not_autoplace no)
