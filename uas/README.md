@@ -9,13 +9,7 @@
 **Embedded Flight Controller & Ground Station Platform for Unmanned Aerial Systems**
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-
-[![Platform](https://img.shields.io/badge/Platform-Arduino%20%7C%20ESP32-blue)](https://www.arduino.cc/)
-
 [![Python](https://img.shields.io/badge/Python-3.x-green.svg)](https://www.python.org/)
-
-[![Serial](https://img.shields.io/badge/Protocol-Serial-orange.svg)]()
-
 [![IMU](https://img.shields.io/badge/IMU-MPU6050-red.svg)]()
 
 </div>
